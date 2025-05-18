@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "LgwDbfVedVJxzuwkm2tEi6FmOZssNuK5G3RLJSjMQmY=",
+  "Source": "GestionaT.Api",
+  "BasePath": "_content/GestionaT.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
