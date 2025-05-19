@@ -1,0 +1,16 @@
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\bin\Debug\net8.0\GestionaT.Application.deps.json
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\bin\Debug\net8.0\GestionaT.Application.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\bin\Debug\net8.0\GestionaT.Application.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\bin\Debug\net8.0\GestionaT.Domain.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\bin\Debug\net8.0\GestionaT.Domain.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.csproj.AssemblyReference.cache
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.AssemblyInfoInputs.cache
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.AssemblyInfo.cs
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.csproj.CoreCompileInputs.cache
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.sourcelink.json
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\Gestiona.CACF9160.Up2Date
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\refint\GestionaT.Application.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Application\obj\Debug\net8.0\ref\GestionaT.Application.dll

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "GestionaT.Infraestructure/1.0.0": {
+        "runtime": {
+          "GestionaT.Infraestructure.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GestionaT.Infraestructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

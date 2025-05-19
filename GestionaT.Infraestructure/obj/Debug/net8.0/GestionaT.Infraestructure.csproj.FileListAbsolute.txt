@@ -1,0 +1,12 @@
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\bin\Debug\net8.0\GestionaT.Infraestructure.deps.json
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\bin\Debug\net8.0\GestionaT.Infraestructure.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\bin\Debug\net8.0\GestionaT.Infraestructure.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.AssemblyInfoInputs.cache
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.AssemblyInfo.cs
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.csproj.CoreCompileInputs.cache
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.sourcelink.json
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\refint\GestionaT.Infraestructure.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Infraestructure\obj\Debug\net8.0\ref\GestionaT.Infraestructure.dll

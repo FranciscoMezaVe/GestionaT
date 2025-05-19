@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GestionaT.Persistence": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "PGSQLConnectionString": "aaa"
+      }
+    }
+  }
+}

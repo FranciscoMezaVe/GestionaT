@@ -7,3 +7,5 @@
 [2025-05-18 16:35:34 WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
 [2025-05-18 16:35:41 INF] Prueba de log
 [2025-05-18 16:35:41 INF] HTTP GET /WeatherForecast responded 200 in 46.7476 ms
+[21:28:28 WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert. (App: GestionaT, Env: Development, Machine: , PID: , TID: )
+[22:00:50 WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert. (App: GestionaT, Env: Development, Machine: , PID: , TID: )
