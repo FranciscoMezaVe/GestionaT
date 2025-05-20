@@ -36,6 +36,9 @@ namespace GestionaT.Persistence.PGSQL
                 {
                     entry.Entity.UpdatedAt = now;
                 }
+
+                //QUITAR DESPUES
+                entry.Entity.CreatedBy = "Admin";
             }
 
             return await base.SaveChangesAsync(cancellationToken);

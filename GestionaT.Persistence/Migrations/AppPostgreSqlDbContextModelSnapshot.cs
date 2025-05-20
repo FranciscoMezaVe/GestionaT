@@ -63,6 +63,9 @@ namespace GestionaT.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -263,7 +266,7 @@ namespace GestionaT.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("GestionaT.Domain.Entities.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -331,11 +334,6 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Sales");
 
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("GestionaT.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Customer", b =>

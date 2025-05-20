@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "/Y+2U+mIB08=",
+  "dgSpecHash": "A7oy2dhCTqE=",
   "success": true,
   "projectFilePath": "D:\\Documentos\\Visual Studio 2022\\GestionaT\\GestionaT.Persistence\\GestionaT.Persistence.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Francisco\\.nuget\\packages\\automapper\\14.0.0\\automapper.14.0.0.nupkg.sha512",
     "C:\\Users\\Francisco\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Francisco\\.nuget\\packages\\mediatr\\12.5.0\\mediatr.12.5.0.nupkg.sha512",
     "C:\\Users\\Francisco\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",

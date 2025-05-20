@@ -129,4 +129,7 @@ D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\obj\Debug\net8.0\refint
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\obj\Debug\net8.0\GestionaT.Api.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\obj\Debug\net8.0\GestionaT.Api.genruntimeconfig.cache
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\obj\Debug\net8.0\ref\GestionaT.Api.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\AutoMapper.dll
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\Newtonsoft.Json.dll

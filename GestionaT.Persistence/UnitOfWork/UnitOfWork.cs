@@ -2,17 +2,18 @@
 using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Abstractions;
+using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionaT.Persistence.UnitOfWork
 {
-    public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
+    public class UnitOfWork : IUnitOfWork
     {
-        private readonly TContext _context;
+        private readonly AppPostgreSqlDbContext _context;
         private readonly ConcurrentDictionary<Type, object> _repositories = new();
 
-        public UnitOfWork(TContext context)
+        public UnitOfWork(AppPostgreSqlDbContext context)
         {
             _context = context;
         }
@@ -23,7 +24,7 @@ namespace GestionaT.Persistence.UnitOfWork
 
             if (!_repositories.ContainsKey(type))
             {
-                var repoInstance = new Repository<TEntity, TContext>(_context);
+                var repoInstance = new Repository<TEntity>(_context);
                 _repositories[type] = repoInstance;
             }
 

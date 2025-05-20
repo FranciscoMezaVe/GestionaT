@@ -1,5 +1,6 @@
 using Serilog;
 using GestionaT.Persistence;
+using GestionaT.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,9 @@ builder.Services.AddSwaggerGen();
 
 //Persistence
 builder.Services.AddPersistence();
+
+//Application
+builder.Services.AddApplicationLayer();
 
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));

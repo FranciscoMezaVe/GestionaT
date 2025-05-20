@@ -1,16 +1,17 @@
 ﻿using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Domain.Abstractions;
+using GestionaT.Persistence.PGSQL;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionaT.Persistence.Repositories
 {
-    public class Repository<TEntity, TContext> 
+    public class Repository<TEntity> 
         : IRepository<TEntity> where TEntity 
-        : class, IEntity where TContext : DbContext
+        : class, IEntity
     {
-        private readonly TContext _context;
+        private readonly AppPostgreSqlDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
-        public Repository(TContext context)
+        public Repository(AppPostgreSqlDbContext context)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();
