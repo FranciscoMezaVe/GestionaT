@@ -72,7 +72,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Guid",
+        "Type": "GestionaT.Domain.Entities.Category",
         "MediaTypes": [
           "text/plain",
           "application/json",

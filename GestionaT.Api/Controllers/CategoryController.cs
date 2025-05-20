@@ -27,12 +27,26 @@ namespace GestionaT.Api.Controllers
             if (request == null)
             {
                 _logger.LogInformation("La peticion no cuenta con el formato correspondiente");
-                return BadRequest();
+                return BadRequest("La solicitud no es valida.");
             }
 
-            var guid = await _mediator.Send(request);
-            _logger.LogInformation($"Categoria creada: {guid}");
-            return Ok(guid);
+            var result = await _mediator.Send(request);
+
+            if (!result.IsSuccess)
+            {
+                _logger.LogInformation("Sucedio un error al crear la categoria.");
+                return UnprocessableEntity(new
+                {
+                    Message = "Error al crear la categoria",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+            _logger.LogInformation($"Categoria creada: {result.Value}");
+            return Ok(result.Value);
         }
 
         [HttpPatch("{id}")]
@@ -56,7 +70,7 @@ namespace GestionaT.Api.Controllers
             //Aplicar el patch
             //request.ApplyTo(category, (Microsoft.AspNetCore.JsonPatch.Adapters.IObjectAdapter)ModelState);
 
-            var afterCategory = new UpdatePatchCategory(category.Id, category.Name, category.Description);
+            //var afterCategory = new UpdatePatchCategory(category.Id, category.Name, category.Description);
 
             if (TryValidateModel(category))
             {
@@ -70,7 +84,7 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Guid>> GetCategoryById(Guid id)
+        public async Task<ActionResult<Category>> GetCategoryById(Guid id)
         {
             if (id == Guid.Empty)
             {
@@ -78,16 +92,24 @@ namespace GestionaT.Api.Controllers
                 return BadRequest();
             }
 
-            var category = await _mediator.Send(new GetCategoryByIdQuery(id));
+            var result = await _mediator.Send(new GetCategoryByIdQuery(id));
 
-            if (category is null)
+            if (!result.IsSuccess)
             {
-                _logger.LogInformation("Categoria no encontrada");
-                return NoContent();
+                _logger.LogInformation("Sucedio un error al consultar la categoria.");
+                return UnprocessableEntity(new
+                {
+                    Message = "Error al consultar la categoria",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
             }
 
-            _logger.LogInformation($"Categoria encontrada: {category}");
-            return Ok(category);
+            _logger.LogInformation($"Categoria encontrada: {result.Value}");
+            return Ok(result.Value);
         }
     }
 }

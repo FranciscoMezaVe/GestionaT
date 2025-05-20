@@ -133,3 +133,4 @@ D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\AutoMa
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Api\bin\Debug\net8.0\FluentResults.dll

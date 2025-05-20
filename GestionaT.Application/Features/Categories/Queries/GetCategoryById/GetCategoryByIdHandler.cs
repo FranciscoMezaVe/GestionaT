@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentResults;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using MediatR;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
 {
-    public class GetCategoryByIdHandler : IRequestHandler<GetCategoryByIdQuery, Category>
+    public class GetCategoryByIdHandler : IRequestHandler<GetCategoryByIdQuery, Result<Category>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<GetCategoryByIdHandler> _logger;
@@ -19,15 +20,29 @@ namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
             _mapper = mapper;
         }
 
-        public async Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Category>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Mapeando peticion");
+            try
+            {
+                _logger.LogInformation("Mapeando peticion");
 
-            _logger.LogInformation("Consultando en base de datos");
-            var category = await _unitOfWork.Repository<Category>().GetByIdAsync(request.Id);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                _logger.LogInformation("Consultando en base de datos");
+                var category = await _unitOfWork.Repository<Category>().GetByIdAsync(request.Id);
 
-            return category;
+                if(category is null)
+                {
+                    _logger.LogInformation("Categoria no encontrada");
+                    return Result.Fail(new Error("Categoria no encontrada"));
+                }
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return category;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error al consultar la categoria");
+                return Result.Fail(new Error("Error al consultar la categoria").CausedBy(e));
+            }
         }
     }
 }

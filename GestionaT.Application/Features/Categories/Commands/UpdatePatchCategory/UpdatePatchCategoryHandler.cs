@@ -21,7 +21,7 @@ namespace GestionaT.Application.Features.Categories.Commands.UpdatePatchCategory
         public Task<Guid> Handle(UpdatePatchCategory request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Mapeando peticion");
-
+            return Task.FromResult(request.Id);
         }
     }
 }

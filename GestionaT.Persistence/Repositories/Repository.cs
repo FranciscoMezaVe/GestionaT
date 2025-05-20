@@ -1,4 +1,5 @@
-﻿using GestionaT.Application.Interfaces.Repositories;
+﻿using System.Linq.Expressions;
+using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Domain.Abstractions;
 using GestionaT.Persistence.PGSQL;
 using Microsoft.EntityFrameworkCore;
@@ -28,5 +29,10 @@ namespace GestionaT.Persistence.Repositories
             => _dbSet.Remove(entity);
         public IQueryable<TEntity> Query()
             => _dbSet.AsQueryable();
+
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return await _dbSet.AnyAsync(predicate, cancellationToken);
+        }
     }
 }
