@@ -2,12 +2,15 @@
 using GestionaT.Domain.Entities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using GestionaT.Persistence.Common;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GestionaT.Persistence.PGSQL
 {
-    public sealed class AppPostgreSqlDbContext : DbContext
+    public sealed class AppPostgreSqlDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        public AppPostgreSqlDbContext(DbContextOptions<AppPostgreSqlDbContext> options) : base(options)
+        public AppPostgreSqlDbContext(DbContextOptions<AppPostgreSqlDbContext> options) 
+            : base(options)
         {
         }
 
@@ -17,7 +20,9 @@ namespace GestionaT.Persistence.PGSQL
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Sale> Sales => Set<Sale>();
         public DbSet<SaleProduct> SaleProducts=> Set<SaleProduct>();
-        public DbSet<User> Users => Set<User>();
+        public DbSet<Members> Members => Set<Members>();
+        public DbSet<Role> Roles => Set<Role>();
+        public DbSet<Permission> Permissions => Set<Permission>();
 
         // Auditado automático
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

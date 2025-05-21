@@ -4,10 +4,12 @@ namespace GestionaT.Domain.Entities
 {
     public class Business : BaseEntity
     {
+        public Guid OwnerId { get; set; }
         public required string Name { get; set; }
-        public ICollection<User> Users { get; set; }
+        public ICollection<Members> Members { get; set; }
         public ICollection<Customer> Customers { get; set; }
         public ICollection<Product> Products { get; set; }
         public ICollection<Sale> Sales { get; set; }
+        public ICollection<Role> Roles { get; set; }
     }
 }

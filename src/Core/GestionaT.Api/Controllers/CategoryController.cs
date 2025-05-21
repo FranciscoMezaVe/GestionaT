@@ -3,11 +3,13 @@ using GestionaT.Application.Features.Categories.Commands.UpdatePatchCategory;
 using GestionaT.Application.Features.Categories.Queries.GetCategoryById;
 using GestionaT.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionaT.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase

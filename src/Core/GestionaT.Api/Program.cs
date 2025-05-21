@@ -1,6 +1,10 @@
 using Serilog;
 using GestionaT.Persistence;
 using GestionaT.Application;
+using GestionaT.Infraestructure;
+using GestionaT.Infraestructure.Seeds;
+using GestionaT.Persistence.PGSQL;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +21,9 @@ builder.Services.AddPersistence();
 //Application
 builder.Services.AddApplicationLayer();
 
+//Infraestructure
+builder.Services.AddInfraestructureLayer(builder.Configuration);
+
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
@@ -30,6 +37,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -37,5 +47,16 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseSerilogRequestLogging();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<AppPostgreSqlDbContext>();
+    await context.Database.MigrateAsync();
+
+    // Seed the database with initial data
+    await IdentitySeeder.SeedAdminUserAsync(services);
+}
 
 app.Run();

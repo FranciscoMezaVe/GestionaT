@@ -1,5 +1,6 @@
 ﻿using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
+using GestionaT.Persistence.Common;
 using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Repositories;
 using GestionaT.Persistence.UnitOfWork;

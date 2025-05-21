@@ -1,4 +1,5 @@
 ﻿using GestionaT.Application.Behaviors;
+using GestionaT.Application.Interfaces.Auth;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
