@@ -1,6 +1,7 @@
 ﻿using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Persistence.Common;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Infraestructure.Auth
@@ -53,6 +54,30 @@ namespace GestionaT.Infraestructure.Auth
             _logger.LogInformation("Usuario con el correo {Email} se econtro con id {id}", email, user.Id);
             return user.Id;
         }
+        public async Task<IList<string>?> GetBusinessesIdAsync(Guid userId)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.MemberBusinesses)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                _logger.LogWarning("Usuario con el id {id} no se encontró", userId);
+                return null;
+            }
+
+            if (user.MemberBusinesses == null || !user.MemberBusinesses.Any())
+            {
+                _logger.LogWarning("Usuario con el id {id} no tiene negocios como miembro", userId);
+                return null;
+            }
+
+            var businessIds = user.MemberBusinesses
+                .Select(ub => ub.BusinessId.ToString())
+                .ToList();
+
+            return businessIds;
+        }
 
         public async Task<IList<string>> GetUserRolesAsync(Guid userId)
         {
@@ -64,6 +89,26 @@ namespace GestionaT.Infraestructure.Auth
             }
             var roles = await _userManager.GetRolesAsync(user);
             return roles;
+        }
+
+        public Task<bool> RegisterUserAsync(string email, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ConfirmEmailAsync(string email, string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ChangePasswordAsync(string email, string oldPassword, string newPassword)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(Guid userId, string userEmail, IList<string> roles);
+        string GenerateToken(Guid userId, string userEmail, IList<string> roles, IList<string> bussinessesId);
     }
 }

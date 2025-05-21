@@ -3,6 +3,7 @@ using System;
 using GestionaT.Persistence.PGSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GestionaT.Persistence.Migrations
 {
     [DbContext(typeof(AppPostgreSqlDbContext))]
-    partial class AppPostgreSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250521031409_add_relation_category_with_businessTwo")]
+    partial class add_relation_category_with_businessTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -574,13 +577,13 @@ namespace GestionaT.Persistence.Migrations
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Category", b =>
                 {
-                    b.HasOne("GestionaT.Domain.Entities.Business", "Business")
-                        .WithMany("Categories")
+                    b.HasOne("GestionaT.Domain.Entities.Business", "Negocio")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Business");
+                    b.Navigation("Negocio");
                 });
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Customer", b =>
@@ -745,8 +748,6 @@ namespace GestionaT.Persistence.Migrations
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Business", b =>
                 {
-                    b.Navigation("Categories");
-
                     b.Navigation("Customers");
 
                     b.Navigation("Members");

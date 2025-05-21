@@ -24,7 +24,8 @@ namespace GestionaT.Application.Features.Auth.Commands.LoginCommand
                 {
                     Guid userId = await _authentication.GetUserIdAsync(request.Email);
                     var userRoles = await _authentication.GetUserRolesAsync(userId);
-                    return _jwtTokenService.GenerateToken(userId, request.Email, userRoles);
+                    var businessesId = await _authentication.GetBusinessesIdAsync(userId);
+                    return _jwtTokenService.GenerateToken(userId, request.Email, userRoles, businessesId);
                 }
                 return Result.Fail<string>("Invalid credentials");
             }

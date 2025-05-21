@@ -16,7 +16,7 @@ namespace GestionaT.Infraestructure.Auth
             _configuration = configuration;
         }
 
-        public string GenerateToken(Guid userId, string userEmail, IList<string> roles)
+        public string GenerateToken(Guid userId, string userEmail, IList<string> roles, IList<string> bussinessesId)
         {
             string secretKey = Environment.GetEnvironmentVariable("secret-key")!;
             var jwtSettings = _configuration.GetSection("JwtSettings");
@@ -26,8 +26,12 @@ namespace GestionaT.Infraestructure.Auth
             var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, userEmail)
+            new Claim(JwtRegisteredClaimNames.Email, userEmail),
         };
+            if(bussinessesId is not null && bussinessesId!.Any())
+            {
+                claims.Add(new Claim(jwtSettings["Businesses"]!, string.Join(",", bussinessesId!)));
+            }
 
             foreach (var role in roles)
             {

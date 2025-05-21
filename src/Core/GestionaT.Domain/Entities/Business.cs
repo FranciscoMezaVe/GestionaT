@@ -11,5 +11,6 @@ namespace GestionaT.Domain.Entities
         public ICollection<Product> Products { get; set; }
         public ICollection<Sale> Sales { get; set; }
         public ICollection<Role> Roles { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }
