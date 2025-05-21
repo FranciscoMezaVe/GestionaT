@@ -13,3 +13,5 @@ A lightweight and flexible management app designed to help small businesses—su
 📦 **Powered by** PostgreSQL and Redis, ready for deployment on free-tier services.
 
 🚀 Ideal for entrepreneurs, micro-businesses, and local stores looking for a simple yet powerful solution.
+
+![Database diagram](public/GestionaTDiagram.png)
