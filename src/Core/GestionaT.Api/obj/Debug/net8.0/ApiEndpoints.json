@@ -28,7 +28,7 @@
   {
     "ContainingType": "GestionaT.Api.Controllers.CategoryController",
     "Method": "CreateCategory",
-    "RelativePath": "api/Category",
+    "RelativePath": "api/business/{businessId}/Category",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -36,6 +36,11 @@
       {
         "Name": "request",
         "Type": "GestionaT.Application.Features.Categories.Commands.CreateCategory.CreateCategoryCommand",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],
@@ -54,7 +59,7 @@
   {
     "ContainingType": "GestionaT.Api.Controllers.CategoryController",
     "Method": "UpdatePatchCategory",
-    "RelativePath": "api/Category/{id}",
+    "RelativePath": "api/business/{businessId}/Category/{id}",
     "HttpMethod": "PATCH",
     "IsController": true,
     "Order": 0,
@@ -67,6 +72,11 @@
       {
         "Name": "request",
         "Type": "Microsoft.AspNetCore.JsonPatch.JsonPatchDocument\u00601[[GestionaT.Application.Features.Categories.Commands.UpdatePatchCategory.UpdatePatchCategory, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "",
         "IsRequired": true
       }
     ],
@@ -85,7 +95,7 @@
   {
     "ContainingType": "GestionaT.Api.Controllers.CategoryController",
     "Method": "GetCategoryById",
-    "RelativePath": "api/Category/{id}",
+    "RelativePath": "api/business/{businessId}/Category/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -93,6 +103,11 @@
       {
         "Name": "id",
         "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "",
         "IsRequired": true
       }
     ],

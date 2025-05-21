@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using GestionaT.Application.Interfaces.Auth;
+using GestionaT.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,7 +31,7 @@ namespace GestionaT.Infraestructure.Auth
         };
             if(bussinessesId is not null && bussinessesId!.Any())
             {
-                claims.Add(new Claim(jwtSettings["Businesses"]!, string.Join(",", bussinessesId!)));
+                claims.Add(new Claim(ClaimsTypeExtensions.Bussinesses, string.Join(",", bussinessesId!)));
             }
 
             foreach (var role in roles)

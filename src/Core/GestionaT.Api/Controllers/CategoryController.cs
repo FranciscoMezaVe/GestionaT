@@ -1,7 +1,11 @@
-﻿using GestionaT.Application.Features.Categories.Commands.CreateCategory;
+﻿using FluentResults;
+using GestionaT.Application.Common;
+using GestionaT.Application.Features.Categories.Commands.CreateCategory;
 using GestionaT.Application.Features.Categories.Commands.UpdatePatchCategory;
 using GestionaT.Application.Features.Categories.Queries.GetCategoryById;
 using GestionaT.Domain.Entities;
+using GestionaT.Domain.Enums;
+using GestionaT.Infraestructure.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,8 +14,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace GestionaT.Api.Controllers
 {
     [Authorize]
+    [AuthorizeBusinessAccess("businessId")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/business/{businessId}/[controller]")]
     public class CategoryController : ControllerBase
     {
         private readonly ILogger<CategoryController> _logger;
@@ -36,8 +41,9 @@ namespace GestionaT.Api.Controllers
 
             if (!result.IsSuccess)
             {
+                var httpError = result.Errors.OfType<HttpError>().FirstOrDefault();
                 _logger.LogInformation("Sucedio un error al crear la categoria.");
-                return UnprocessableEntity(new
+                return StatusCode(httpError.StatusCode, new
                 {
                     Message = "Error al crear la categoria",
                     Errors = result.Errors.Select(e => new

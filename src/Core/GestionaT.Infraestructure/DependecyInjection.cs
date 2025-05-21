@@ -8,6 +8,8 @@ using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Common;
 using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Infraestructure.Auth;
+using GestionaT.Infraestructure.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestionaT.Infraestructure
 {
@@ -43,6 +45,9 @@ namespace GestionaT.Infraestructure
 
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             return services;
         }
