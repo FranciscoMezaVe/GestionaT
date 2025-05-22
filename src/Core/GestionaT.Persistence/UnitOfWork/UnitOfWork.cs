@@ -5,6 +5,7 @@ using GestionaT.Domain.Abstractions;
 using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Persistence.UnitOfWork
 {
@@ -13,10 +14,12 @@ namespace GestionaT.Persistence.UnitOfWork
         private readonly AppPostgreSqlDbContext _context;
         private readonly ConcurrentDictionary<Type, object> _repositories = new();
         private IDbContextTransaction? _currentTransaction;
+        private ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(AppPostgreSqlDbContext context)
+        public UnitOfWork(AppPostgreSqlDbContext context, ILogger<UnitOfWork> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
@@ -33,7 +36,11 @@ namespace GestionaT.Persistence.UnitOfWork
 
         public async Task BeginTransactionAsync()
         {
-            if (_currentTransaction != null) return;
+            if (_currentTransaction != null)
+            {
+                _logger.LogDebug("Ya hay una transacción activa. No se iniciará una nueva.");
+                return;
+            }
             _currentTransaction = await _context.Database.BeginTransactionAsync();
         }
 
