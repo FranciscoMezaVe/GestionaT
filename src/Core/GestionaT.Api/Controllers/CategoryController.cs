@@ -92,7 +92,7 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategoryById(Guid id)
+        public async Task<ActionResult<Category>> GetCategoryById(Guid id, Guid businessId)
         {
             if (id == Guid.Empty)
             {

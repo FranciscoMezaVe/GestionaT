@@ -159,7 +159,7 @@
       },
       {
         "Name": "businessId",
-        "Type": "",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],
