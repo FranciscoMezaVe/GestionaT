@@ -648,6 +648,7 @@
           "AutoMapper": "14.0.0",
           "FluentResults": "3.16.0",
           "GestionaT.Domain": "1.0.0",
+          "GestionaT.Shared": "1.0.0",
           "MediatR": "12.5.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
         },
@@ -661,6 +662,14 @@
       "GestionaT.Domain/1.0.0": {
         "runtime": {
           "GestionaT.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "GestionaT.Shared/1.0.0": {
+        "runtime": {
+          "GestionaT.Shared.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -1016,6 +1025,11 @@
       "sha512": ""
     },
     "GestionaT.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GestionaT.Shared/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

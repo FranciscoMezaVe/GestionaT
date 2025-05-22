@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Business\Queries\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
@@ -19,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GestionaT.Domain\GestionaT.Domain.csproj" />
+    <ProjectReference Include="..\GestionaT.Shared\GestionaT.Shared.csproj" />
   </ItemGroup>
 
 </Project>

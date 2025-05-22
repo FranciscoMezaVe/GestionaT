@@ -26,6 +26,58 @@
     ]
   },
   {
+    "ContainingType": "GestionaT.Api.Controllers.AuthController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/Auth/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Auth.Commands.RefreshTokenCommand.RefreshTokenCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.BusinessController",
+    "Method": "GetBusiness",
+    "RelativePath": "api/Business",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Business.Commands.CreateBusinessCommand.CreateBusinessCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Guid",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "GestionaT.Api.Controllers.CategoryController",
     "Method": "CreateCategory",
     "RelativePath": "api/business/{businessId}/Category",

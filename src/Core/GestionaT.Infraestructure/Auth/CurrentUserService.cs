@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
-using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Domain.Enums;
+using GestionaT.Shared.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace GestionaT.Infraestructure.Auth
@@ -24,5 +24,15 @@ namespace GestionaT.Infraestructure.Auth
         public List<string> BusinessIds =>
             _httpContextAccessor.HttpContext?.User?.FindAll(ClaimsTypeExtensions.Bussinesses)
                 ?.Select(c => c.Value).ToList() ?? new();
+        public List<string> Roles =>
+            _httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role)
+                .Select(r => r.Value)
+                .ToList() ?? new();
+        public List<string> GetClaims(string claimType)
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindAll(claimType)
+                .Select(c => c.Value)
+                .ToList() ?? new();
+        }
     }
 }

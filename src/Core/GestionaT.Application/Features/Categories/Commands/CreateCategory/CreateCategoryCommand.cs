@@ -3,6 +3,11 @@ using MediatR;
 
 namespace GestionaT.Application.Features.Categories.Commands.CreateCategory
 {
-    public record CreateCategoryCommand(string Name, string Description) 
-        : IRequest<Result<Guid>>;
+    public class CreateCategoryCommand
+        : IRequest<Result<Guid>>
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public Guid BusinessId { get; set; }
+    }
 }

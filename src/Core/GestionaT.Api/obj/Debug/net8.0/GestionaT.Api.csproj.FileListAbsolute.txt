@@ -284,4 +284,6 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\obj\Debug\net8
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\obj\Debug\net8.0\GestionaT.Api.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\obj\Debug\net8.0\GestionaT.Api.genruntimeconfig.cache
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\obj\Debug\net8.0\ref\GestionaT.Api.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\bin\Debug\net8.0\GestionaT.Shared.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\bin\Debug\net8.0\GestionaT.Shared.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

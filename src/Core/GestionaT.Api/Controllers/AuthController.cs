@@ -1,4 +1,6 @@
-﻿using GestionaT.Application.Features.Auth.Commands.LoginCommand;
+﻿using GestionaT.Application.Common;
+using GestionaT.Application.Features.Auth.Commands.LoginCommand;
+using GestionaT.Application.Features.Auth.Commands.RefreshTokenCommand;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +19,7 @@ namespace GestionaT.Api.Controllers
             _logger = logger;
         }
 
-        // POST api/<AuthController>/login
+        // POST api/auth/login
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody]LoginCommand request)
         {
@@ -43,6 +45,36 @@ namespace GestionaT.Api.Controllers
                 });
             }
             _logger.LogInformation("Sesion iniciada, token: {@token}", result.Value);
+            return Ok(result.Value);
+        }
+
+        // POST api/auth/refresh-token
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken([FromBody] RefreshTokenCommand request)
+        {
+            if (request == null)
+            {
+                _logger.LogInformation("La peticion no cuenta con el formato correspondiente");
+                return BadRequest("La solicitud no es valida.");
+            }
+
+            var result = await _mediator.Send(request);
+
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().First();
+                _logger.LogInformation("Sucedio un error al refrescar el token.");
+                return StatusCode(httpError.StatusCode, new
+                {
+                    Message = "Error al refrescar el token",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+            _logger.LogInformation("token refrescado: {refreshToken}, token: {token}", result.Value.NewRefreshToken, result.Value.NewToken);
             return Ok(result.Value);
         }
     }

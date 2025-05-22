@@ -10,6 +10,7 @@ using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Infraestructure.Auth;
 using GestionaT.Infraestructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using GestionaT.Shared.Abstractions;
 
 namespace GestionaT.Infraestructure
 {

@@ -1,8 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using GestionaT.Application.Interfaces.Auth;
-using GestionaT.Domain.Enums;
+using GestionaT.Application.Interfaces.UnitOfWork;
+using GestionaT.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,13 +13,15 @@ namespace GestionaT.Infraestructure.Auth
     public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public JwtTokenService(IConfiguration configuration)
+        public JwtTokenService(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
-        public string GenerateToken(Guid userId, string userEmail, IList<string> roles, IList<string> bussinessesId)
+        public string GenerateToken(Guid userId, string userEmail, IList<string> roles)
         {
             string secretKey = Environment.GetEnvironmentVariable("secret-key")!;
             var jwtSettings = _configuration.GetSection("JwtSettings");
@@ -29,10 +33,6 @@ namespace GestionaT.Infraestructure.Auth
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, userEmail),
         };
-            if(bussinessesId is not null && bussinessesId!.Any())
-            {
-                claims.Add(new Claim(ClaimsTypeExtensions.Bussinesses, string.Join(",", bussinessesId!)));
-            }
 
             foreach (var role in roles)
             {
@@ -47,7 +47,36 @@ namespace GestionaT.Infraestructure.Auth
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenString;
+        }
+
+        public async Task<string> GenerateRefreshTokenAsync(Guid userId)
+        {
+            var currentToken = _unitOfWork.Repository<RefreshToken>()
+                .Query()
+                .FirstOrDefault(x => x.UserId == userId && !x.IsUsed && !x.IsRevoked && x.Expires > DateTime.UtcNow);
+            if (currentToken is not null)
+            {
+                currentToken.IsUsed = true;
+                _unitOfWork.Repository<RefreshToken>().Update(currentToken);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            
+            var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
+            await _unitOfWork.Repository<RefreshToken>().AddAsync(new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = userId,
+                Expires = DateTime.UtcNow.AddDays(3),
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = userId.ToString()
+            });
+            await _unitOfWork.SaveChangesAsync();
+
+            return refreshToken;
         }
     }
 }

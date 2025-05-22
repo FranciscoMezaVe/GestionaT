@@ -1,9 +1,7 @@
 ﻿using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
-using GestionaT.Persistence.Common;
 using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Repositories;
-using GestionaT.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +13,8 @@ namespace GestionaT.Persistence
         {
             #region GENERAL
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IBusinessRepository, BusinessRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             #endregion
 

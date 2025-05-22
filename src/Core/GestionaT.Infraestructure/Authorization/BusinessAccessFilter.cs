@@ -1,21 +1,24 @@
-﻿using GestionaT.Application.Interfaces.Auth;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using GestionaT.Shared.Abstractions;
+using GestionaT.Application.Interfaces.Repositories;
 
 namespace GestionaT.Infraestructure.Authorization
 {
     public class BusinessAccessFilter : IAsyncActionFilter
     {
         private readonly string _routeParam;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IBusinessRepository _businessRepository;
         private readonly ILogger<BusinessAccessFilter> _logger;
+        private readonly ICurrentUserService _currentUserService;
 
-        public BusinessAccessFilter(string routeParam, ICurrentUserService currentUserService, ILogger<BusinessAccessFilter> logger)
+        public BusinessAccessFilter(string routeParam, IBusinessRepository businessRepository, ILogger<BusinessAccessFilter> logger, ICurrentUserService currentUserService)
         {
             _routeParam = routeParam;
-            _currentUserService = currentUserService;
+            _businessRepository = businessRepository;
             _logger = logger;
+            _currentUserService = currentUserService;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -26,9 +29,11 @@ namespace GestionaT.Infraestructure.Authorization
                 return;
             }
 
-            if (!_currentUserService.BusinessIds.Contains(businessId.ToString()))
+            Guid userId = _currentUserService.UserId!.Value;
+
+            if (!_businessRepository.GetBusinessIdsAccessibleByUser(userId).Contains(businessId))
             {
-                _logger.LogWarning("El usuario {userId} no tiene acceso al negocio con id {businessId}", _currentUserService.UserId, businessId);
+                _logger.LogWarning("El usuario {userId} no tiene acceso al negocio con id {businessId}", userId, businessId);
                 context.Result = new ForbidResult(); // 403
                 return;
             }

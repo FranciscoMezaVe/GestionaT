@@ -4,14 +4,17 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using GestionaT.Persistence.Common;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using GestionaT.Shared.Abstractions;
 
 namespace GestionaT.Persistence.PGSQL
 {
     public sealed class AppPostgreSqlDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        public AppPostgreSqlDbContext(DbContextOptions<AppPostgreSqlDbContext> options) 
+        private readonly ICurrentUserService _currentUserService;
+        public AppPostgreSqlDbContext(DbContextOptions<AppPostgreSqlDbContext> options, ICurrentUserService currentUserService)
             : base(options)
         {
+            _currentUserService = currentUserService;
         }
 
         public DbSet<Business> Businesses => Set<Business>();
@@ -23,11 +26,13 @@ namespace GestionaT.Persistence.PGSQL
         public DbSet<Members> Members => Set<Members>();
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<Permission> Permissions => Set<Permission>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         // Auditado automático
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<IAuditable>();
+            var userId = _currentUserService.UserId?.ToString() ?? "system";
 
             foreach (var entry in entries)
             {
@@ -36,14 +41,13 @@ namespace GestionaT.Persistence.PGSQL
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedAt = now;
+                    entry.Entity.CreatedBy = userId;
                 }
                 else if (entry.State == EntityState.Modified)
                 {
                     entry.Entity.UpdatedAt = now;
+                    entry.Entity.UpdatedBy = userId;
                 }
-
-                //QUITAR DESPUES
-                entry.Entity.CreatedBy = "Admin";
             }
 
             return await base.SaveChangesAsync(cancellationToken);

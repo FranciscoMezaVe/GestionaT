@@ -15,25 +15,23 @@ namespace GestionaT.Application.Features.Categories.Commands.CreateCategory
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateCategoryHandler> _logger;
         private readonly IMapper _mapper;
-        private readonly ICurrentUserService _currentUserService;
 
-        public CreateCategoryHandler(IUnitOfWork unitOfWork, ILogger<CreateCategoryHandler> logger, IMapper mapper, ICurrentUserService currentUserService)
+        public CreateCategoryHandler(IUnitOfWork unitOfWork, ILogger<CreateCategoryHandler> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
-            _currentUserService = currentUserService;
         }
 
         public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
 
             var exists = await _unitOfWork.Repository<Category>()
-                .AnyAsync(c => c.Name == request.Name, cancellationToken);
+                .AnyAsync(c => c.Name == request.Name && c.BusinessId == request.BusinessId, cancellationToken);
 
             if (exists)
             {
-                _logger.LogWarning("Ya existe una categoría con el nombre: {CategoryName}", request.Name);
+                _logger.LogWarning("Ya existe una categoría con el nombre: {CategoryName}, Negocio: {Business}", request.Name, request.BusinessId);
                 return Result.Fail<Guid>(new HttpError("Ya existe una categoría con ese nombre.", ResultStatusCode.UnprocesableContent));
             }
 
@@ -43,6 +41,7 @@ namespace GestionaT.Application.Features.Categories.Commands.CreateCategory
             _logger.LogInformation("Guardando en base de datos");
             await _unitOfWork.Repository<Category>().AddAsync(category);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _logger.LogWarning("Categoria guardada con el nombre: {CategoryName}, Negocio: {Business}", request.Name, request.BusinessId);
 
             return Result.Ok(category.Id);
         }

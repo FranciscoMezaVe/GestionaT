@@ -1,10 +1,8 @@
-﻿using FluentResults;
-using GestionaT.Application.Common;
+﻿using GestionaT.Application.Common;
 using GestionaT.Application.Features.Categories.Commands.CreateCategory;
 using GestionaT.Application.Features.Categories.Commands.UpdatePatchCategory;
 using GestionaT.Application.Features.Categories.Queries.GetCategoryById;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using GestionaT.Infraestructure.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,13 +27,15 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateCategory([FromBody] CreateCategoryCommand request)
+        public async Task<ActionResult<Guid>> CreateCategory([FromBody] CreateCategoryCommand request, Guid businessId)
         {
             if (request == null)
             {
                 _logger.LogInformation("La peticion no cuenta con el formato correspondiente");
                 return BadRequest("La solicitud no es valida.");
             }
+
+            request.BusinessId = businessId;
 
             var result = await _mediator.Send(request);
 

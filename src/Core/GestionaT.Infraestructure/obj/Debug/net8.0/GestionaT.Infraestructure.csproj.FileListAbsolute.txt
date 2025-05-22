@@ -30,3 +30,5 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Infraestructure\ob
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Infraestructure\obj\Debug\net8.0\refint\GestionaT.Infraestructure.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Infraestructure\obj\Debug\net8.0\GestionaT.Infraestructure.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Infraestructure\obj\Debug\net8.0\ref\GestionaT.Infraestructure.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Infraestructure\bin\Debug\net8.0\GestionaT.Shared.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Infraestructure\bin\Debug\net8.0\GestionaT.Shared.pdb

@@ -980,6 +980,7 @@
           "AutoMapper": "14.0.0",
           "FluentResults": "3.16.0",
           "GestionaT.Domain": "1.0.0",
+          "GestionaT.Shared": "1.0.0",
           "MediatR": "12.5.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         },
@@ -998,6 +999,16 @@
         },
         "runtime": {
           "bin/placeholder/GestionaT.Domain.dll": {}
+        }
+      },
+      "GestionaT.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/GestionaT.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GestionaT.Shared.dll": {}
         }
       }
     }
@@ -2482,6 +2493,11 @@
       "type": "project",
       "path": "../GestionaT.Domain/GestionaT.Domain.csproj",
       "msbuildProject": "../GestionaT.Domain/GestionaT.Domain.csproj"
+    },
+    "GestionaT.Shared/1.0.0": {
+      "type": "project",
+      "path": "../GestionaT.Shared/GestionaT.Shared.csproj",
+      "msbuildProject": "../GestionaT.Shared/GestionaT.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {

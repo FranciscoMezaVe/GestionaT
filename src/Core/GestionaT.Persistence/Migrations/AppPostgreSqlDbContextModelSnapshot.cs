@@ -250,6 +250,48 @@ namespace GestionaT.Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -643,6 +685,15 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("GestionaT.Persistence.Common.ApplicationUser", null)
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Role", b =>
                 {
                     b.HasOne("GestionaT.Domain.Entities.Business", "Business")
@@ -788,6 +839,8 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("MemberBusinesses");
 
                     b.Navigation("OwnedBusinesses");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

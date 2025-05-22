@@ -40,6 +40,15 @@ namespace GestionaT.Infraestructure.Auth
             return true;
         }
 
+        public async Task<bool> IsExistsUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) is not null;
+        }
+
+        public async Task<bool> IsExistsUserByIdAsync(Guid id)
+        {
+            return await _userManager.FindByIdAsync(id.ToString()) is not null;
+        }
 
         public async Task<Guid> GetUserIdAsync(string email)
         {
@@ -58,6 +67,7 @@ namespace GestionaT.Infraestructure.Auth
         {
             var user = await _userManager.Users
                 .Include(u => u.MemberBusinesses)
+                .Include(u => u.OwnedBusinesses)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
@@ -66,17 +76,24 @@ namespace GestionaT.Infraestructure.Auth
                 return null;
             }
 
-            if (user.MemberBusinesses == null || !user.MemberBusinesses.Any())
+            var memberBusinessIds = user.MemberBusinesses?
+                .Select(ub => ub.BusinessId.ToString()) ?? new List<string>();
+
+            var ownedBusinessIds = user.OwnedBusinesses?
+                .Select(b => b.Id.ToString()) ?? new List<string>();
+
+            var allBusinessIds = memberBusinessIds
+                .Union(ownedBusinessIds)
+                .Distinct()
+                .ToList();
+
+            if (!allBusinessIds.Any())
             {
-                _logger.LogWarning("Usuario con el id {id} no tiene negocios como miembro", userId);
+                _logger.LogWarning("Usuario con el id {id} no tiene negocios como miembro ni propietario", userId);
                 return null;
             }
 
-            var businessIds = user.MemberBusinesses
-                .Select(ub => ub.BusinessId.ToString())
-                .ToList();
-
-            return businessIds;
+            return allBusinessIds;
         }
 
         public async Task<IList<string>> GetUserRolesAsync(Guid userId)
@@ -109,6 +126,12 @@ namespace GestionaT.Infraestructure.Auth
         public Task<bool> ChangePasswordAsync(string email, string oldPassword, string newPassword)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> GetUserEmailAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            return user.Email!;
         }
     }
 }
