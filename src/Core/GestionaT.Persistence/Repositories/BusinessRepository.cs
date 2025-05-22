@@ -17,6 +17,12 @@ namespace GestionaT.Persistence.Repositories
             .Where(b => b.OwnerId == userId)
             .ToList();
 
+        public IList<Business> GetBusinessAccessibleByUser(Guid userId)
+        => _context.Businesses
+            .Include(b => b.Members)
+            .Where(b => b.Members.Any(m => m.UserId == userId) || b.OwnerId == userId)
+            .ToList();
+
         public IList<Guid> GetBusinessIdsAccessibleByUser(Guid userId)
         => _context.Businesses
             .Include(b => b.Members)

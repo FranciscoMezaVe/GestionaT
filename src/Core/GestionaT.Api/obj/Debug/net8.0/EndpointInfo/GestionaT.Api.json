@@ -101,10 +101,10 @@
         }
       }
     },
-    "/api/Business": {
+    "/api/Businesses": {
       "post": {
         "tags": [
-          "Business"
+          "Businesses"
         ],
         "requestBody": {
           "content": {
@@ -150,12 +150,97 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Businesses"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessReponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessReponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessReponse"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/api/business/{businessId}/Category": {
+    "/api/Businesses/{businessId}": {
+      "get": {
+        "tags": [
+          "Businesses"
+        ],
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessReponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessReponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessReponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/businesses/{businessId}/Categories": {
       "post": {
         "tags": [
-          "Category"
+          "Categories"
         ],
         "parameters": [
           {
@@ -214,10 +299,10 @@
         }
       }
     },
-    "/api/business/{businessId}/Category/{id}": {
+    "/api/businesses/{businessId}/Categories/{id}": {
       "patch": {
         "tags": [
-          "Category"
+          "Categories"
         ],
         "parameters": [
           {
@@ -285,7 +370,7 @@
       },
       "get": {
         "tags": [
-          "Category"
+          "Categories"
         ],
         "parameters": [
           {
@@ -330,13 +415,74 @@
           }
         }
       }
+    },
+    "/api/businesses/{businessId}/Roles": {
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRolesCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRolesCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRolesCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "Business": {
         "required": [
-          "createdBy",
           "name"
         ],
         "type": "object",
@@ -415,9 +561,46 @@
         },
         "additionalProperties": false
       },
+      "BusinessReponse": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Category": {
         "required": [
-          "createdBy",
           "name"
         ],
         "type": "object",
@@ -496,10 +679,26 @@
         },
         "additionalProperties": false
       },
+      "CreateRolesCommand": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "Customer": {
         "required": [
           "business",
-          "createdBy",
           "name"
         ],
         "type": "object",
@@ -577,9 +776,6 @@
         "additionalProperties": false
       },
       "Members": {
-        "required": [
-          "createdBy"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -620,6 +816,9 @@
           },
           "isAccepted": {
             "type": "boolean"
+          },
+          "active": {
+            "$ref": "#/components/schemas/Status"
           }
         },
         "additionalProperties": false
@@ -639,7 +838,6 @@
       },
       "Permission": {
         "required": [
-          "createdBy",
           "name"
         ],
         "type": "object",
@@ -676,7 +874,6 @@
         "required": [
           "business",
           "category",
-          "createdBy",
           "name"
         ],
         "type": "object",
@@ -746,7 +943,6 @@
       },
       "Role": {
         "required": [
-          "createdBy",
           "name"
         ],
         "type": "object",
@@ -795,7 +991,6 @@
       },
       "Sale": {
         "required": [
-          "createdBy",
           "customer"
         ],
         "type": "object",
@@ -876,6 +1071,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "Status": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "UpdatePatchCategoryJsonPatchDocument": {
         "type": "object",

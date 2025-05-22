@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
-using GestionaT.Application.Features.Categories.Commands.CreateCategory;
+using GestionaT.Application.Features.Members.Commands.CreateMembersCommand;
+using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
 using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Enums;
@@ -14,22 +15,26 @@ namespace GestionaT.Application.Features.Business.Commands.CreateBusinessCommand
     public class CreateBusinessCommandHandler : IRequestHandler<CreateBusinessCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CreateCategoryHandler> _logger;
+        private readonly ILogger<CreateBusinessCommandHandler> _logger;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
         private readonly IBusinessRepository _businessRepository;
+        private readonly IMediator _mediator;
 
-        public CreateBusinessCommandHandler(IUnitOfWork unitOfWork, ILogger<CreateCategoryHandler> logger, IMapper mapper, ICurrentUserService currentUserService, IBusinessRepository businessRepository)
+        public CreateBusinessCommandHandler(IUnitOfWork unitOfWork, ILogger<CreateBusinessCommandHandler> logger, IMapper mapper, ICurrentUserService currentUserService, IBusinessRepository businessRepository, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _currentUserService = currentUserService;
             _businessRepository = businessRepository;
+            _mediator = mediator;
         }
 
         public async Task<Result<Guid>> Handle(CreateBusinessCommand request, CancellationToken cancellationToken)
         {
+            await _unitOfWork.BeginTransactionAsync();
+
             var userId = _currentUserService.UserId!.Value;
             var businessesUserId = _businessRepository.GetAllByUserId(userId);
             if (businessesUserId.Count >= 1)
@@ -39,14 +44,38 @@ namespace GestionaT.Application.Features.Business.Commands.CreateBusinessCommand
             }
             //Quiza en futuro validar por el nombre
 
-            _logger.LogInformation("Mapeando peticion");
             var business = _mapper.Map<Domain.Entities.Business>(request);
             business.OwnerId = userId;
 
-            _logger.LogInformation("Guardando en base de datos");
             await _unitOfWork.Repository<Domain.Entities.Business>().AddAsync(business);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Guardando en base de datos");
+
+            var roleResult = await _mediator.Send(new CreateRolesCommand
+            {
+                Name = RolesValues.Owner,
+                BusinessId = business.Id
+            }, cancellationToken);
+
+            if (roleResult.IsFailed)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return roleResult;
+            }
+
+            var memberResult = await _mediator.Send(new CreateMembersCommand
+            {
+                BusinessId = business.Id,
+                UserId = userId,
+                RoleId = roleResult.Value
+            }, cancellationToken);
+
+            if (memberResult.IsFailed)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return memberResult;
+            }
+
+            await _unitOfWork.CommitTransactionAsync();
+            _logger.LogWarning("Guardado en base de datos");
             return Result.Ok(business.Id);
         }
     }

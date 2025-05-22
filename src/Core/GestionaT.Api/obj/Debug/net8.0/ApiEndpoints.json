@@ -52,9 +52,9 @@
     ]
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.BusinessController",
-    "Method": "GetBusiness",
-    "RelativePath": "api/Business",
+    "ContainingType": "GestionaT.Api.Controllers.BusinessesController",
+    "Method": "CreateBusiness",
+    "RelativePath": "api/Businesses",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -78,9 +78,55 @@
     ]
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.CategoryController",
+    "ContainingType": "GestionaT.Api.Controllers.BusinessesController",
+    "Method": "GetAllBusinesses",
+    "RelativePath": "api/Businesses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[GestionaT.Application.Features.Business.Queries.BusinessReponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.BusinessesController",
+    "Method": "GetBusinessById",
+    "RelativePath": "api/Businesses/{businessId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[GestionaT.Application.Features.Business.Queries.BusinessReponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
     "Method": "CreateCategory",
-    "RelativePath": "api/business/{businessId}/Category",
+    "RelativePath": "api/businesses/{businessId}/Categories",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -109,9 +155,9 @@
     ]
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.CategoryController",
+    "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
     "Method": "UpdatePatchCategory",
-    "RelativePath": "api/business/{businessId}/Category/{id}",
+    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
     "HttpMethod": "PATCH",
     "IsController": true,
     "Order": 0,
@@ -145,9 +191,9 @@
     ]
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.CategoryController",
+    "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
     "Method": "GetCategoryById",
-    "RelativePath": "api/business/{businessId}/Category/{id}",
+    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -166,6 +212,37 @@
     "ReturnTypes": [
       {
         "Type": "GestionaT.Domain.Entities.Category",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.RolesController",
+    "Method": "CreateRoles",
+    "RelativePath": "api/businesses/{businessId}/Roles",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Roles.Commands.CreateRolesCommand.CreateRolesCommand",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Guid",
         "MediaTypes": [
           "text/plain",
           "application/json",

@@ -14,13 +14,13 @@ namespace GestionaT.Api.Controllers
     [Authorize]
     [AuthorizeBusinessAccess("businessId")]
     [ApiController]
-    [Route("api/business/{businessId}/[controller]")]
-    public class CategoryController : ControllerBase
+    [Route("api/businesses/{businessId}/[controller]")]
+    public class CategoriesController : ControllerBase
     {
-        private readonly ILogger<CategoryController> _logger;
+        private readonly ILogger<CategoriesController> _logger;
         private readonly IMediator _mediator;
 
-        public CategoryController(ILogger<CategoryController> logger, IMediator mediator)
+        public CategoriesController(ILogger<CategoriesController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;

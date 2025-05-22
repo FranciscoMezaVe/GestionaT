@@ -1,0 +1,11 @@
+﻿using GestionaT.Domain.Abstractions;
+
+namespace GestionaT.Application.Features.Members
+{
+    public class MembersResponse : BaseEntity
+    {
+        public Guid UserId { get; set; }
+        public Guid BusinessId { get; set; }
+        public Guid RoleId { get; set; }
+    }
+}

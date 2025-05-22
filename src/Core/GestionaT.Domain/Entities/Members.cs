@@ -1,4 +1,5 @@
 ﻿using GestionaT.Domain.Abstractions;
+using GestionaT.Domain.Enums;
 
 namespace GestionaT.Domain.Entities
 {
@@ -9,5 +10,6 @@ namespace GestionaT.Domain.Entities
         public Guid RoleId { get; set; }
         public Role Role { get; set; }
         public bool IsAccepted { get; set; } = false;
+        public Status Active { get; set; } = Status.Active;
     }
 }

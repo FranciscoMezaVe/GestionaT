@@ -11,5 +11,6 @@
         public const int Conflict = 409;
         public const int InternalError = 500;
         public const int UnprocesableContent = 422;
+        public const int NoContent = 204;
     }
 }

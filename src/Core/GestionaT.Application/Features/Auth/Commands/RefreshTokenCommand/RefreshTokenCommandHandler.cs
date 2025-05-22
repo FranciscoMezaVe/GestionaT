@@ -16,16 +16,14 @@ namespace GestionaT.Application.Features.Auth.Commands.RefreshTokenCommand
         private readonly IAuthenticationService _authentication;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly ILogger<LoginCommandHandler> _logger;
+        private readonly ILogger<RefreshTokenCommandHandler> _logger;
 
-        public RefreshTokenCommandHandler(IAuthenticationService authentication, IJwtTokenService jwtTokenService, ILogger<LoginCommandHandler> logger, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
+        public RefreshTokenCommandHandler(IAuthenticationService authentication, IJwtTokenService jwtTokenService, ILogger<RefreshTokenCommandHandler> logger, IUnitOfWork unitOfWork)
         {
             _authentication = authentication;
             _jwtTokenService = jwtTokenService;
             _logger = logger;
             _unitOfWork = unitOfWork;
-            _currentUserService = currentUserService;
         }
 
         public async Task<Result<RefreshTokenCommandResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)

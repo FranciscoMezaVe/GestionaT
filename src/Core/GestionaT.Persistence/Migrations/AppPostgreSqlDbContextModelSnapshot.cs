@@ -139,6 +139,9 @@ namespace GestionaT.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Active")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("BusinessId")
                         .HasColumnType("uuid");
 

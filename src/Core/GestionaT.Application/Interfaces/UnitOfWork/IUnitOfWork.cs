@@ -7,5 +7,8 @@ namespace GestionaT.Application.Interfaces.UnitOfWork
     {
         IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity;
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
     }
 }

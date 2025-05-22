@@ -1,27 +1,29 @@
 ﻿using GestionaT.Application.Common;
-using GestionaT.Application.Features.Business.Commands.CreateBusinessCommand;
+using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
+using GestionaT.Infraestructure.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionaT.Api.Controllers
 {
+    [Route("api/businesses/{businessId}/[controller]")]
     [Authorize]
-    [Route("api/[controller]")]
+    [AuthorizeBusinessAccess("businessId")]
     [ApiController]
-    public class BusinessController : ControllerBase
+    public class RolesController : ControllerBase
     {
-        private readonly ILogger<BusinessController> _logger;
+        private readonly ILogger<RolesController> _logger;
         private readonly IMediator _mediator;
 
-        public BusinessController(ILogger<BusinessController> logger, IMediator mediator)
+        public RolesController(ILogger<RolesController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> GetBusiness([FromBody] CreateBusinessCommand request)
+        public async Task<ActionResult<Guid>> CreateRoles([FromBody] CreateRolesCommand request, Guid businessId)
         {
             if (request == null)
             {
@@ -29,15 +31,17 @@ namespace GestionaT.Api.Controllers
                 return BadRequest("La solicitud no es valida.");
             }
 
+            request.BusinessId = businessId;
+
             var result = await _mediator.Send(request);
 
             if (!result.IsSuccess)
             {
                 var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogInformation("Sucedio un error al crear el negocio.");
+                _logger.LogInformation("Sucedio un error al crear el rol.");
                 return StatusCode(httpError.StatusCode, new
                 {
-                    Message = "Error al crear el negocio",
+                    Message = "Error al crear el rol.",
                     Errors = result.Errors.Select(e => new
                     {
                         e.Message,
@@ -45,7 +49,7 @@ namespace GestionaT.Api.Controllers
                     })
                 });
             }
-            _logger.LogInformation("Negocio creado: {business}", result.Value);
+            _logger.LogInformation("rol creado: {rol}", result.Value);
             return Ok(result.Value);
         }
     }
