@@ -1,5 +1,10 @@
 ﻿using GestionaT.Application.Common;
+using GestionaT.Application.Features.Roles;
 using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
+using GestionaT.Application.Features.Roles.Commands.DeleteRoleCommand;
+using GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand;
+using GestionaT.Application.Features.Roles.Queries.GetAllRolesQuery;
+using GestionaT.Application.Features.Roles.Queries.GetRoleByIdQuery;
 using GestionaT.Infraestructure.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -51,6 +56,87 @@ namespace GestionaT.Api.Controllers
             }
             _logger.LogInformation("rol creado: {rol}", result.Value);
             return Ok(result.Value);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<RolesResponse>>> GetAllRoles(Guid businessId)
+        {
+            var result = await _mediator.Send(new GetAllRolesQuery(businessId));
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().First();
+                _logger.LogInformation("Sucedio un error al obtener los roles.");
+                return StatusCode(httpError.StatusCode, new
+                {
+                    Message = "Error al obtener los roles.",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet("{roleId}")]
+        public async Task<ActionResult<RolesResponse>> GetRoleById(Guid businessId, Guid roleId)
+        {
+            var result = await _mediator.Send(new GetRoleByIdQuery(businessId, roleId));
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().First();
+                _logger.LogInformation("Sucedió un error al obtener el rol con ID {RoleId}", roleId);
+                return StatusCode(httpError.StatusCode, new
+                {
+                    Message = "Error al obtener el rol.",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid businessId, Guid id, [FromBody] UpdateRoleCommand request)
+        {
+            request.Id = id;
+            request.BusinessId = businessId;
+
+            var result = await _mediator.Send(request);
+
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().First();
+                return StatusCode(httpError.StatusCode, new
+                {
+                    Message = "Error al actualizar el rol.",
+                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
+                });
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid businessId, Guid id)
+        {
+            var result = await _mediator.Send(new DeleteRoleCommand(id, businessId));
+
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().First();
+                return StatusCode(httpError.StatusCode, new
+                {
+                    Message = "Error al eliminar el rol.",
+                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
+                });
+            }
+
+            return NoContent();
         }
     }
 }

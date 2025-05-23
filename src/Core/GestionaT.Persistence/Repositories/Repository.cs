@@ -6,33 +6,76 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GestionaT.Persistence.Repositories
 {
-    public class Repository<TEntity> 
-        : IRepository<TEntity> where TEntity 
-        : class, IEntity
+    public class Repository<TEntity> : IRepository<TEntity>
+        where TEntity : class, IEntity
     {
         private readonly AppPostgreSqlDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
+
         public Repository(AppPostgreSqlDbContext context)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();
         }
+
         public async Task<TEntity?> GetByIdAsync(Guid id)
-            => await _dbSet.FindAsync(id);
+        {
+            // Buscar respetando soft delete si aplica
+            var entity = await _dbSet.FindAsync(id);
+            if (entity is ISoftDeletable softDeletable && softDeletable.IsDeleted)
+                return null;
+
+            return entity;
+        }
+
         public async Task<List<TEntity>> GetAllAsync()
-            => await _dbSet.ToListAsync();
+        {
+            return await Query().ToListAsync();
+        }
+
         public async Task AddAsync(TEntity entity)
-            => await _dbSet.AddAsync(entity);
+        {
+            await _dbSet.AddAsync(entity);
+        }
+
         public void Update(TEntity entity)
-            => _dbSet.Update(entity);
+        {
+            _dbSet.Update(entity);
+        }
+
         public void Remove(TEntity entity)
-            => _dbSet.Remove(entity);
+        {
+            if (entity is ISoftDeletable softDeletable)
+            {
+                softDeletable.IsDeleted = true;
+                _dbSet.Update(entity);
+            }
+            else
+            {
+                _dbSet.Remove(entity);
+            }
+        }
+
         public IQueryable<TEntity> Query()
-            => _dbSet.AsQueryable();
+        {
+            // Filtra eliminados si aplica
+            var query = _dbSet.AsQueryable();
+            if (typeof(ISoftDeletable).IsAssignableFrom(typeof(TEntity)))
+            {
+                query = query.Where(e => !EF.Property<bool>(e, nameof(ISoftDeletable.IsDeleted)));
+            }
+
+            return query;
+        }
+
+        public IQueryable<TEntity> QueryIncludingDeleted()
+        {
+            return _dbSet.IgnoreQueryFilters();
+        }
 
         public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.AnyAsync(predicate, cancellationToken);
+            return await Query().AnyAsync(predicate, cancellationToken);
         }
     }
 }

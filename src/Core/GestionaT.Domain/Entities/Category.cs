@@ -2,7 +2,7 @@
 
 namespace GestionaT.Domain.Entities
 {
-    public class Category : BaseEntity
+    public class Category : BaseEntity, ISoftDeletable
     {
         public required string Name { get; set; }
         public string? Description { get; set; }
@@ -10,5 +10,6 @@ namespace GestionaT.Domain.Entities
         public Business Business { get; set; } = default!;
 
         public ICollection<Product> Products { get; set; } = new List<Product>();
+        public bool IsDeleted { get; set; }
     }
 }

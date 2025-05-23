@@ -9,25 +9,30 @@ namespace GestionaT.Persistence.Repositories
     {
         private readonly AppPostgreSqlDbContext _context;
 
-        public BusinessRepository(AppPostgreSqlDbContext context) :
-            base(context) => _context = context;
+        public BusinessRepository(AppPostgreSqlDbContext context) : base(context)
+            => _context = context;
 
         public IList<Business> GetAllByUserId(Guid userId)
-        => _context.Businesses
-            .Where(b => b.OwnerId == userId)
-            .ToList();
+            => Query() // Usa repositorio base que ya filtra eliminados
+                .Where(b => b.OwnerId == userId)
+                .ToList();
 
         public IList<Business> GetBusinessAccessibleByUser(Guid userId)
-        => _context.Businesses
-            .Include(b => b.Members)
-            .Where(b => b.Members.Any(m => m.UserId == userId) || b.OwnerId == userId)
-            .ToList();
+            => Query()
+                .Include(b => b.Members)
+                .Where(b => b.Members.Any(m => m.UserId == userId) || b.OwnerId == userId)
+                .ToList();
 
         public IList<Guid> GetBusinessIdsAccessibleByUser(Guid userId)
-        => _context.Businesses
-            .Include(b => b.Members)
-            .Where(b => b.Members.Any(m => m.UserId == userId) || b.OwnerId == userId)
-            .Select(b => b.Id)
-            .ToList();
+            => Query()
+                .Include(b => b.Members)
+                .Where(b => b.Members.Any(m => m.UserId == userId) || b.OwnerId == userId)
+                .Select(b => b.Id)
+                .ToList();
+        public IList<Business> GetAllIncludingDeletedByUser(Guid userId)
+    => _context.Businesses
+        .IgnoreQueryFilters()
+        .Where(b => b.OwnerId == userId)
+        .ToList();
     }
 }

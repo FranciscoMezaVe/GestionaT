@@ -37,6 +37,7 @@ namespace GestionaT.Application.Features.Members.Commands.CreateMembersCommand
                 }
 
                 _logger.LogInformation("Reactivando miembro inactivo");
+                memberExists.IsAccepted = true;
                 var result = await ReactivateMember(memberExists, cancellationToken);
                 return result;
             }

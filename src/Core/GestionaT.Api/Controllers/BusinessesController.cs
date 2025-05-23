@@ -1,5 +1,7 @@
 ﻿using GestionaT.Application.Common;
 using GestionaT.Application.Features.Business.Commands.CreateBusinessCommand;
+using GestionaT.Application.Features.Business.Commands.DeleteBusinessCommand;
+using GestionaT.Application.Features.Business.Commands.UpdateBusinessCommand;
 using GestionaT.Application.Features.Business.Queries;
 using GestionaT.Application.Features.Business.Queries.GetAllBusinessesQuery;
 using GestionaT.Application.Features.Business.Queries.GetBusinessByIdQuery;
@@ -103,6 +105,61 @@ namespace GestionaT.Api.Controllers
 
             _logger.LogInformation("Negocio encontrado {businessesCount}", result.Value);
             return Ok(result.Value);
+        }
+
+        [AuthorizeBusinessAccess("businessId")]
+        [HttpDelete("{businessId}")]
+        public async Task<IActionResult> DeleteBusiness(Guid businessId)
+        {
+            var result = await _mediator.Send(new DeleteBusinessCommand(businessId));
+
+            if (result.IsFailed)
+            {
+                _logger.LogWarning("Error al eliminar el negocio");
+                return NotFound(new
+                {
+                    Message = "No se encontró el negocio para eliminar.",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+
+            _logger.LogInformation("Negocio eliminado: {businessId}", businessId);
+            return NoContent();
+        }
+
+        [AuthorizeBusinessAccess("businessId")]
+        [HttpPut("{businessId}")]
+        public async Task<ActionResult> UpdateBusiness(Guid businessId, [FromBody] UpdateBusinessDto request)
+        {
+            if (request == null)
+            {
+                _logger.LogInformation("La solicitud de actualización no es válida.");
+                return BadRequest("Solicitud inválida.");
+            }
+
+            var result = await _mediator.Send(new UpdateBusinessCommand(businessId, request));
+
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().FirstOrDefault();
+                _logger.LogInformation("Error al actualizar el negocio.");
+                return StatusCode(httpError?.StatusCode ?? 422, new
+                {
+                    Message = "Error al actualizar el negocio.",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+
+            _logger.LogInformation("Negocio actualizado correctamente.");
+            return NoContent();
         }
     }
 }

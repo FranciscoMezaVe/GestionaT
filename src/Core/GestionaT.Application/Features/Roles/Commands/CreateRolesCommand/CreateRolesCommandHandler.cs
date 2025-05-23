@@ -24,13 +24,22 @@ namespace GestionaT.Application.Features.Roles.Commands.CreateRolesCommand
 
         public async Task<Result<Guid>> Handle(CreateRolesCommand request, CancellationToken cancellationToken)
         {
-            var exists = _unitOfWork.Repository<Role>().Query()
-                .Any(x => x.Name == request.Name && x.BusinessId == request.BusinessId);
+            var existing = _unitOfWork.Repository<Role>()
+                .QueryIncludingDeleted()
+                .FirstOrDefault(r => r.BusinessId == request.BusinessId && r.Name == request.Name);
 
-            if (exists)
+            if (existing is not null)
             {
-                _logger.LogWarning("Ya existe un rol con nombre {name} en el negocio {business}", request.Name, request.BusinessId);
-                return Result.Fail<Guid>(new HttpError("Ya existe un rol con ese nombre", ResultStatusCode.UnprocesableContent));    
+                if (existing.IsDeleted)
+                {
+                    // Reactivar
+                    existing.IsDeleted = false;
+                    _unitOfWork.Repository<Role>().Update(existing);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    return Result.Ok(existing.Id);
+                }
+
+                return Result.Fail(new HttpError("Ya existe un rol con ese nombre.", ResultStatusCode.Conflict));
             }
 
             var role = _mapper.Map<Role>(request);

@@ -4,6 +4,7 @@ using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Abstractions;
 using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 

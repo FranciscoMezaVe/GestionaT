@@ -2,7 +2,7 @@
 
 namespace GestionaT.Domain.Entities
 {
-    public class Sale : BaseEntity
+    public class Sale : BaseEntity, ISoftDeletable
     {
         public DateTime Date { get; set; }
 
@@ -13,5 +13,6 @@ namespace GestionaT.Domain.Entities
         public required Customer Customer { get; set; }
 
         public ICollection<SaleProduct> SaleProducts { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

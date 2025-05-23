@@ -11,11 +11,11 @@ namespace GestionaT.Application.Features.Business.Queries.GetAllBusinessesQuery
 {
     public class GetAllBusinessesQueryHandler : IRequestHandler<GetAllBusinessesQuery, Result<IEnumerable<BusinessReponse>>>
     {
-        private readonly ILogger<CreateCategoryHandler> _logger;
+        private readonly ILogger<GetAllBusinessesQueryHandler> _logger;
         private readonly IMapper _mapper;
         private readonly IBusinessRepository _businessRepository;
 
-        public GetAllBusinessesQueryHandler(ILogger<CreateCategoryHandler> logger, IMapper mapper, IBusinessRepository businessRepository)
+        public GetAllBusinessesQueryHandler(ILogger<GetAllBusinessesQueryHandler> logger, IMapper mapper, IBusinessRepository businessRepository)
         {
             _logger = logger;
             _mapper = mapper;

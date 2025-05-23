@@ -2,7 +2,7 @@
 
 namespace GestionaT.Domain.Entities
 {
-    public class Customer : BaseEntity
+    public class Customer : BaseEntity, ISoftDeletable
     {
         public required string Name { get; set; }
         public string? Rfc { get; set; }
@@ -11,5 +11,6 @@ namespace GestionaT.Domain.Entities
         public Guid BusinessId { get; set; }
         public required Business Business { get; set; }
         public ICollection<Sale> Sales { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -124,6 +124,43 @@
     ]
   },
   {
+    "ContainingType": "GestionaT.Api.Controllers.BusinessesController",
+    "Method": "DeleteBusiness",
+    "RelativePath": "api/Businesses/{businessId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.BusinessesController",
+    "Method": "UpdateBusiness",
+    "RelativePath": "api/Businesses/{businessId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Business.Commands.UpdateBusinessCommand.UpdateBusinessDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
     "Method": "CreateCategory",
     "RelativePath": "api/businesses/{businessId}/Categories",
@@ -222,6 +259,110 @@
     ]
   },
   {
+    "ContainingType": "GestionaT.Api.Controllers.MembersController",
+    "Method": "GetAllMembersByBusiness",
+    "RelativePath": "api/businesses/{businessId}/Members",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[GestionaT.Application.Features.Members.MembersResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.MembersController",
+    "Method": "DeleteMember",
+    "RelativePath": "api/businesses/{businessId}/Members/{memberId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "memberId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.MembersController",
+    "Method": "GetMemberById",
+    "RelativePath": "api/businesses/{businessId}/Members/{memberId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "memberId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GestionaT.Application.Features.Members.MembersResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.MembersController",
+    "Method": "UpdateMemberRole",
+    "RelativePath": "api/businesses/{businessId}/Members/{memberId}/role",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "memberId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Members.Commands.UpdateMemberRoleCommand.UpdateMemberRoleDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestionaT.Api.Controllers.RolesController",
     "Method": "CreateRoles",
     "RelativePath": "api/businesses/{businessId}/Roles",
@@ -243,6 +384,110 @@
     "ReturnTypes": [
       {
         "Type": "System.Guid",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.RolesController",
+    "Method": "GetAllRoles",
+    "RelativePath": "api/businesses/{businessId}/Roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[GestionaT.Application.Features.Roles.RolesResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.RolesController",
+    "Method": "Update",
+    "RelativePath": "api/businesses/{businessId}/Roles/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand.UpdateRoleCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.RolesController",
+    "Method": "Delete",
+    "RelativePath": "api/businesses/{businessId}/Roles/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.RolesController",
+    "Method": "GetRoleById",
+    "RelativePath": "api/businesses/{businessId}/Roles/{roleId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "roleId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GestionaT.Application.Features.Roles.RolesResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
