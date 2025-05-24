@@ -101,12 +101,9 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid businessId, Guid id, [FromBody] UpdateRoleCommand request)
+        public async Task<IActionResult> Update(Guid businessId, Guid id, [FromBody] UpdateRoleCommandRequest request)
         {
-            request.Id = id;
-            request.BusinessId = businessId;
-
-            var result = await _mediator.Send(request);
+            var result = await _mediator.Send(new UpdateRoleCommand(request, id, businessId));
 
             if (!result.IsSuccess)
             {

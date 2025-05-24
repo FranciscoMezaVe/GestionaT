@@ -11,6 +11,9 @@ namespace GestionaT.Application.Profiles
         {
             CreateMap<CreateMembersCommand, Members>();
             CreateMap<Members, MembersResponse>();
+
+            CreateMap<Members, MembersResponse>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.Name));
         }
     }
 }

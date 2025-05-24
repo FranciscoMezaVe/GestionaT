@@ -32,7 +32,6 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
         {
             var userId = _currentUserService.UserId!.Value;
 
-            // Validar si el usuario es owner del negocio
             var business = await _unitOfWork.Repository<Domain.Entities.Business>()
                 .GetByIdAsync(request.BusinessId);
 
@@ -42,18 +41,20 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
                 return Result.Fail(new HttpError("No tienes permiso para ver los miembros de este negocio.", ResultStatusCode.Forbidden));
             }
 
-            var ActiveMembers = _unitOfWork.Repository<Domain.Entities.Members>()
-                .Query()
+            // Traer miembros con Role incluido
+            var activeMembers = _unitOfWork.Repository<Domain.Entities.Members>()
+                .QueryIncluding(p => p.Role)
                 .Where(m => m.BusinessId == request.BusinessId && m.Active == Status.Active)
                 .ToList();
 
-            if (!ActiveMembers.Any())
+            if (activeMembers.Count == 0)
             {
                 _logger.LogInformation("No se encontraron miembros activos para el negocio {BusinessId}.", request.BusinessId);
                 return Result.Fail(new HttpError("No se encontraron miembros activos.", ResultStatusCode.NotFound));
             }
 
-            var response = _mapper.Map<IEnumerable<MembersResponse>>(ActiveMembers);
+            var response = _mapper.Map<IEnumerable<MembersResponse>>(activeMembers);
+
             return Result.Ok(response);
         }
     }

@@ -5,5 +5,5 @@ using MediatR;
 namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
 {
     public record GetCategoryByIdQuery(Guid Id)
-        : IRequest<Result<Category>>;
+        : IRequest<Result<CategoryResponse>>;
 }

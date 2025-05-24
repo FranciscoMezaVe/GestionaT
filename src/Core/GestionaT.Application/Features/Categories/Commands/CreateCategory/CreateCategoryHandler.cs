@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
-using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -10,39 +9,53 @@ using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Application.Features.Categories.Commands.CreateCategory
 {
-    public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Result<Guid>>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CreateCategoryHandler> _logger;
         private readonly IMapper _mapper;
+        private readonly ILogger<CreateCategoryCommandHandler> _logger;
 
-        public CreateCategoryHandler(IUnitOfWork unitOfWork, ILogger<CreateCategoryHandler> logger, IMapper mapper)
+        public CreateCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<CreateCategoryCommandHandler> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
         }
 
-        public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
-
-            var exists = await _unitOfWork.Repository<Category>()
-                .AnyAsync(c => c.Name == request.Name && c.BusinessId == request.BusinessId, cancellationToken);
-
-            if (exists)
+            var name = command.Request.Name?.Trim();
+            if (string.IsNullOrWhiteSpace(name))
             {
-                _logger.LogWarning("Ya existe una categoría con el nombre: {CategoryName}, Negocio: {Business}", request.Name, request.BusinessId);
-                return Result.Fail<Guid>(new HttpError("Ya existe una categoría con ese nombre.", ResultStatusCode.UnprocesableContent));
+                _logger.LogWarning("Nombre de categoría vacío o nulo.");
+                return Result.Fail(new HttpError("El nombre de la categoría es obligatorio.", ResultStatusCode.BadRequest));
             }
 
-            _logger.LogInformation("Mapeando peticion");
-            var category = _mapper.Map<Category>(request);
+            var existing = _unitOfWork.Repository<Category>()
+                .QueryIncludingDeleted()
+                .FirstOrDefault(c => c.BusinessId == command.BusinessId && c.Name.ToLower() == name.ToLower());
 
-            _logger.LogInformation("Guardando en base de datos");
+            if (existing is not null)
+            {
+                if (existing.IsDeleted)
+                {
+                    _logger.LogInformation("Reactivando categoría eliminada con ID {CategoryId}", existing.Id);
+                    existing.IsDeleted = false;
+                    _unitOfWork.Repository<Category>().Update(existing);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    return Result.Ok(existing.Id);
+                }
+
+                _logger.LogWarning("Ya existe una categoría activa con el nombre '{CategoryName}' en el negocio {BusinessId}.", name, command.BusinessId);
+                return Result.Fail(new HttpError("Ya existe una categoría con ese nombre.", ResultStatusCode.Conflict));
+            }
+
+            var category = _mapper.Map<Category>(command.Request);
+            category.BusinessId = command.BusinessId;
             await _unitOfWork.Repository<Category>().AddAsync(category);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            _logger.LogWarning("Categoria guardada con el nombre: {CategoryName}, Negocio: {Business}", request.Name, request.BusinessId);
 
+            _logger.LogInformation("Categoría creada correctamente con ID {CategoryId}", category.Id);
             return Result.Ok(category.Id);
         }
     }

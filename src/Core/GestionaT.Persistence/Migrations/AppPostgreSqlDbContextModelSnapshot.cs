@@ -697,11 +697,13 @@ namespace GestionaT.Persistence.Migrations
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Invitation", b =>
                 {
-                    b.HasOne("GestionaT.Domain.Entities.Business", null)
+                    b.HasOne("GestionaT.Domain.Entities.Business", "Business")
                         .WithMany("Invitations")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Business");
                 });
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Members", b =>

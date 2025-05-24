@@ -177,7 +177,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
+    "ContainingType": "CategoriesController",
     "Method": "CreateCategory",
     "RelativePath": "api/businesses/{businessId}/Categories",
     "HttpMethod": "POST",
@@ -186,7 +186,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "GestionaT.Application.Features.Categories.Commands.CreateCategory.CreateCategoryCommand",
+        "Type": "GestionaT.Application.Features.Categories.Commands.CreateCategory.CreateCategoryCommandRequest",
         "IsRequired": true
       },
       {
@@ -208,13 +208,75 @@
     ]
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
-    "Method": "UpdatePatchCategory",
-    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
-    "HttpMethod": "PATCH",
+    "ContainingType": "CategoriesController",
+    "Method": "GetAllCategories",
+    "RelativePath": "api/businesses/{businessId}/Categories",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[GestionaT.Application.Features.Categories.Queries.CategoryResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CategoriesController",
+    "Method": "GetCategoruById",
+    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[GestionaT.Application.Features.Categories.Queries.CategoryResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CategoriesController",
+    "Method": "Update",
+    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
       {
         "Name": "id",
         "Type": "System.Guid",
@@ -222,12 +284,49 @@
       },
       {
         "Name": "request",
-        "Type": "Microsoft.AspNetCore.JsonPatch.JsonPatchDocument\u00601[[GestionaT.Application.Features.Categories.Commands.UpdatePatchCategory.UpdatePatchCategory, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "GestionaT.Application.Features.Categories.Commands.UpdateCategory.UpdateCategoryCommandRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CategoriesController",
+    "Method": "Delete",
+    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.CustomersController",
+    "Method": "Create",
+    "RelativePath": "api/businesses/{businessId}/Customers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Customers.Commands.CreateCustomer.CreateCustomerCommandRequest",
         "IsRequired": true
       },
       {
         "Name": "businessId",
-        "Type": "",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],
@@ -244,18 +343,13 @@
     ]
   },
   {
-    "ContainingType": "GestionaT.Api.Controllers.CategoriesController",
-    "Method": "GetCategoryById",
-    "RelativePath": "api/businesses/{businessId}/Categories/{id}",
+    "ContainingType": "GestionaT.Api.Controllers.CustomersController",
+    "Method": "GetAll",
+    "RelativePath": "api/businesses/{businessId}/Customers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Guid",
-        "IsRequired": true
-      },
       {
         "Name": "businessId",
         "Type": "System.Guid",
@@ -264,7 +358,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "GestionaT.Domain.Entities.Category",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[GestionaT.Application.Features.Customers.CustomerResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -273,6 +367,84 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.CustomersController",
+    "Method": "Update",
+    "RelativePath": "api/businesses/{businessId}/Customers/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Customers.Commands.UpdateCustomer.UpdateCustomerCommandRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.CustomersController",
+    "Method": "GetById",
+    "RelativePath": "api/businesses/{businessId}/Customers/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GestionaT.Application.Features.Customers.CustomerResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.CustomersController",
+    "Method": "Delete",
+    "RelativePath": "api/businesses/{businessId}/Customers/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "GestionaT.API.Controllers.InvitationsController",
@@ -436,6 +608,141 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GestionaT.Api.Controllers.ProductsController",
+    "Method": "Create",
+    "RelativePath": "api/businesses/{businessId}/Products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Products.Commands.CreateProduct.CreateProductCommandRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Guid",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.ProductsController",
+    "Method": "GetAll",
+    "RelativePath": "api/businesses/{businessId}/Products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[GestionaT.Application.Features.Products.Queries.ProductResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.ProductsController",
+    "Method": "Update",
+    "RelativePath": "api/businesses/{businessId}/Products/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "GestionaT.Application.Features.Products.Commands.UpdateProduct.UpdateProductCommandRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.ProductsController",
+    "Method": "GetById",
+    "RelativePath": "api/businesses/{businessId}/Products/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GestionaT.Application.Features.Products.Queries.ProductResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.ProductsController",
+    "Method": "Delete",
+    "RelativePath": "api/businesses/{businessId}/Products/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestionaT.Api.Controllers.RolesController",
     "Method": "CreateRoles",
     "RelativePath": "api/businesses/{businessId}/Roles",
@@ -512,7 +819,7 @@
       },
       {
         "Name": "request",
-        "Type": "GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand.UpdateRoleCommand",
+        "Type": "GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand.UpdateRoleCommandRequest",
         "IsRequired": true
       }
     ],

@@ -34,7 +34,7 @@ public class GetAllInvitationsQueryHandler : IRequestHandler<GetAllInvitationsQu
         var userId = _currentUserService.UserId!.Value;
 
         var invitations = _unitOfWork.Repository<Invitation>()
-            .Query()
+            .QueryIncluding(i => i.Business)
             .Where(i => i.BusinessId == request.businessId)
             .OrderByDescending(i => i.CreatedAt)
             .ProjectTo<InvitationResponse>(_mapper.ConfigurationProvider)

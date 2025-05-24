@@ -18,5 +18,7 @@ namespace GestionaT.Application.Interfaces.Repositories
 
         /// <summary>Incluye eliminados lógicamente (IsDeleted == true).</summary>
         IQueryable<TEntity> QueryIncludingDeleted();
+
+        IQueryable<TEntity> QueryIncluding(params Expression<Func<TEntity, object>>[] includes);
     }
 }

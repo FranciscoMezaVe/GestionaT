@@ -11,7 +11,8 @@ namespace GestionaT.Application.Profiles
         {
             CreateMap<CreateInvitationCommandDto, Invitation>();
 
-            CreateMap<Invitation, InvitationResponse>();
+            CreateMap<Invitation, InvitationResponse>()
+                .ForMember(dest => dest.BusinessName, opt => opt.MapFrom(src => src.Business.Name));
         }
     }
 }

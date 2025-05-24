@@ -15,7 +15,7 @@ namespace GestionaT.Persistence.Configurations
         {
             builder.HasKey(i => i.Id);
 
-            builder.HasOne<Business>()
+            builder.HasOne<Business>(i => i.Business)
                 .WithMany(b => b.Invitations)
                 .HasForeignKey(m => m.BusinessId)
                 .OnDelete(DeleteBehavior.Cascade);

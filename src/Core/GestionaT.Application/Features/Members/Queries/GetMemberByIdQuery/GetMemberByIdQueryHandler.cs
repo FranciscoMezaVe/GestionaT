@@ -40,7 +40,7 @@ namespace GestionaT.Application.Features.Members.Queries.GetMemberById
             }
 
             var member = _unitOfWork.Repository<Domain.Entities.Members>()
-                .Query()
+                .QueryIncluding(m => m.Role)
                 .Where(m => m.Id == request.MemberId && m.BusinessId == request.BusinessId && m.Active == Status.Active)
                 .FirstOrDefault();
 

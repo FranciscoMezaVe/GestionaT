@@ -4,10 +4,5 @@ using MediatR;
 
 namespace GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand
 {
-    public class UpdateRoleCommand : IRequest<Result>
-    {
-        public Guid Id { get; set; }
-        public Guid BusinessId { get; set; }
-        public string Name { get; set; } = default!;
-    }
+    public record UpdateRoleCommand(UpdateRoleCommandRequest Request, Guid Id, Guid BusinessId) : IRequest<Result>;
 }

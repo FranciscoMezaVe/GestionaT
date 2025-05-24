@@ -52,8 +52,7 @@ namespace GestionaT.Application.Features.Roles.Commands.DeleteRoleCommand
             }
 
             // Soft delete
-            role.IsDeleted = true;
-            repository.Update(role);
+            repository.Remove(role);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Rol marcado como eliminado: {RoleId}", role.Id);

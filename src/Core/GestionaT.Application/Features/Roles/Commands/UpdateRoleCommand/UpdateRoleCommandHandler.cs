@@ -22,19 +22,19 @@ namespace GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand
             _mapper = mapper;
         }
 
-        public async Task<Result> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateRoleCommand command, CancellationToken cancellationToken)
         {
             var repository = _unitOfWork.Repository<Role>();
             var role =  repository.Query()
-                .FirstOrDefault(r => r.Id == request.Id && r.BusinessId == request.BusinessId);
+                .FirstOrDefault(r => r.Id == command.Id && r.BusinessId == command.BusinessId);
 
             if (role == null)
             {
-                _logger.LogWarning("No se encontró el rol con ID {RoleId}.", request.Id);
+                _logger.LogWarning("No se encontró el rol con ID {RoleId}.", command.Id);
                 return Result.Fail(new HttpError("Rol no encontrado.", ResultStatusCode.NotFound));
             }
 
-            _mapper.Map(request, role);
+            _mapper.Map(command.Request, role);
 
             repository.Update(role);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

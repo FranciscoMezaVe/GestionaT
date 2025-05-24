@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
 {
-    public class GetCategoryByIdHandler : IRequestHandler<GetCategoryByIdQuery, Result<Category>>
+    public class GetCategoryByIdHandler : IRequestHandler<GetCategoryByIdQuery, Result<CategoryResponse>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<GetCategoryByIdHandler> _logger;
@@ -20,7 +20,7 @@ namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
             _mapper = mapper;
         }
 
-        public async Task<Result<Category>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -36,7 +36,9 @@ namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
                 }
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return category;
+                var response = _mapper.Map<CategoryResponse>(category);
+
+                return response;
             }
             catch (Exception e)
             {
