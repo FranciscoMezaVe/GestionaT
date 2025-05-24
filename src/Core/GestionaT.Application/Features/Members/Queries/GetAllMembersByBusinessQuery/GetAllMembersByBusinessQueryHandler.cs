@@ -42,12 +42,18 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
                 return Result.Fail(new HttpError("No tienes permiso para ver los miembros de este negocio.", ResultStatusCode.Forbidden));
             }
 
-            var miembrosActivos = _unitOfWork.Repository<Domain.Entities.Members>()
+            var ActiveMembers = _unitOfWork.Repository<Domain.Entities.Members>()
                 .Query()
                 .Where(m => m.BusinessId == request.BusinessId && m.Active == Status.Active)
                 .ToList();
 
-            var response = _mapper.Map<IEnumerable<MembersResponse>>(miembrosActivos);
+            if (!ActiveMembers.Any())
+            {
+                _logger.LogInformation("No se encontraron miembros activos para el negocio {BusinessId}.", request.BusinessId);
+                return Result.Fail(new HttpError("No se encontraron miembros activos.", ResultStatusCode.NotFound));
+            }
+
+            var response = _mapper.Map<IEnumerable<MembersResponse>>(ActiveMembers);
             return Result.Ok(response);
         }
     }

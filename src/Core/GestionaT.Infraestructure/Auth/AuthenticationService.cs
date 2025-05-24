@@ -1,4 +1,5 @@
-﻿using GestionaT.Application.Interfaces.Auth;
+﻿using FluentResults;
+using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Persistence.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -108,9 +109,18 @@ namespace GestionaT.Infraestructure.Auth
             return roles;
         }
 
-        public Task<bool> RegisterUserAsync(string email, string password)
+        public async Task<Result<Guid>> RegisterUserAsync(string email, string userName, string password)
         {
-            throw new NotImplementedException();
+            var user = new ApplicationUser { UserName = email, Email = email, NormalizedUserName = userName.ToUpper() };
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => new Error(e.Code).CausedBy(e.Description));
+                return Result.Fail<Guid>(errors);
+            }
+
+            return Result.Ok(user.Id);
         }
 
         public Task<bool> ConfirmEmailAsync(string email, string token)

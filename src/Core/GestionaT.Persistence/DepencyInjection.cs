@@ -14,6 +14,7 @@ namespace GestionaT.Persistence
             #region GENERAL
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IBusinessRepository, BusinessRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             #endregion

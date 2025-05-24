@@ -142,6 +142,41 @@ namespace GestionaT.Persistence.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.Invitation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("InvitedUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId");
+
+                    b.ToTable("Invitation");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Members", b =>
                 {
                     b.Property<Guid>("Id")
@@ -660,6 +695,15 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Business");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.Invitation", b =>
+                {
+                    b.HasOne("GestionaT.Domain.Entities.Business", null)
+                        .WithMany("Invitations")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Members", b =>
                 {
                     b.HasOne("GestionaT.Domain.Entities.Business", null)
@@ -823,6 +867,8 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Categories");
 
                     b.Navigation("Customers");
+
+                    b.Navigation("Invitations");
 
                     b.Navigation("Members");
 

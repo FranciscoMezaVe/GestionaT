@@ -1,4 +1,6 @@
-﻿namespace GestionaT.Application.Interfaces.Auth
+﻿using FluentResults;
+
+namespace GestionaT.Application.Interfaces.Auth
 {
     public interface IAuthenticationService
     {
@@ -8,7 +10,7 @@
         Task<IList<string>> GetUserRolesAsync(Guid userId);
         Task<bool> IsExistsUserByEmailAsync(string email);
         Task<bool> IsExistsUserByIdAsync(Guid id);
-        Task<bool> RegisterUserAsync(string email, string password);
+        Task<Result<Guid>> RegisterUserAsync(string email, string userName, string password);
         Task<bool> ConfirmEmailAsync(string email, string token);
         Task<bool> ResetPasswordAsync(string email, string token, string newPassword);
         Task<bool> ChangePasswordAsync(string email, string oldPassword, string newPassword);
