@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Invitations.Queries.GetAllInvitations;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -10,7 +10,7 @@ using GestionaT.Shared.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class GetAllInvitationsQueryHandler : IRequestHandler<GetAllInvitationsQuery, Result<IEnumerable<InvitationResponse>>>
+public class GetAllInvitationsQueryHandler : IRequestHandler<GetAllInvitationsQuery, Result<PaginatedList<InvitationResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
@@ -29,23 +29,22 @@ public class GetAllInvitationsQueryHandler : IRequestHandler<GetAllInvitationsQu
         _logger = logger;
     }
 
-    public Task<Result<IEnumerable<InvitationResponse>>> Handle(GetAllInvitationsQuery request, CancellationToken cancellationToken)
+    public Task<Result<PaginatedList<InvitationResponse>>> Handle(GetAllInvitationsQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.UserId!.Value;
 
         var invitations = _unitOfWork.Repository<Invitation>()
-            .QueryIncluding(i => i.Business)
-            .Where(i => i.BusinessId == request.businessId)
-            .OrderByDescending(i => i.CreatedAt)
-            .ProjectTo<InvitationResponse>(_mapper.ConfigurationProvider)
-            .AsEnumerable();
+            .Include(i => i.Business)
+            .Where(i => i.BusinessId == request.businessId);
 
         if (!invitations.Any())
         {
             _logger.LogInformation("No se econtraron invitaciones, negocio: {businessId}", request.businessId);
-            return Task.FromResult(Result.Fail<IEnumerable<InvitationResponse>>(new HttpError("No se encontraron invitaciones.", ResultStatusCode.NotFound)));
+            return Task.FromResult(Result.Fail<PaginatedList<InvitationResponse>>(new HttpError("No se encontraron invitaciones.", ResultStatusCode.NotFound)));
         }
+
+        var response = invitations.ToPagedList<Invitation, InvitationResponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);
         
-        return Task.FromResult(Result.Ok(invitations));
+        return Task.FromResult(Result.Ok(response));
     }
 }

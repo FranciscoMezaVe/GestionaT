@@ -1,4 +1,5 @@
 ﻿using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Members;
 using GestionaT.Application.Features.Members.Commands.DeleteMemberCommand;
 using GestionaT.Application.Features.Members.Commands.UpdateMemberRoleCommand;
@@ -54,9 +55,9 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MembersResponse>>> GetAllMembersByBusiness(Guid businessId)
+        public async Task<ActionResult<PaginatedList<MembersResponse>>> GetAllMembersByBusiness(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
         {
-            var result = await _mediator.Send(new GetAllMembersByBusinessQuery(businessId));
+            var result = await _mediator.Send(new GetAllMembersByBusinessQuery(businessId, paginationFilters));
 
             if (!result.IsSuccess)
             {

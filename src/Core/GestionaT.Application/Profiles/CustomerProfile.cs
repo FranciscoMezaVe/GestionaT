@@ -10,9 +10,9 @@ namespace GestionaT.Application.Mappings
     {
         public CustomerProfile()
         {
-            CreateMap<CreateCustomerCommand, Customer>();
+            CreateMap<CreateCustomerCommandRequest, Customer>();
 
-            CreateMap<UpdateCustomerCommand, Customer>()
+            CreateMap<UpdateCustomerCommandRequest, Customer>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Business, opt => opt.Ignore());
 

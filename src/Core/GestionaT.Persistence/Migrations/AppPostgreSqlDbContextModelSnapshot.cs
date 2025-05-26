@@ -58,6 +58,44 @@ namespace GestionaT.Persistence.Migrations
                     b.ToTable("Businesses");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.BusinessImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId")
+                        .IsUnique();
+
+                    b.ToTable("BusinessImages");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -77,6 +115,9 @@ namespace GestionaT.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -94,7 +135,46 @@ namespace GestionaT.Persistence.Migrations
 
                     b.HasIndex("BusinessId");
 
+                    b.HasIndex("ImageId");
+
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("GestionaT.Domain.Entities.CategoryImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryImages");
                 });
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Customer", b =>
@@ -303,6 +383,43 @@ namespace GestionaT.Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.ProductImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -437,6 +554,44 @@ namespace GestionaT.Persistence.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("SaleProducts");
+                });
+
+            modelBuilder.Entity("GestionaT.Domain.Entities.UserImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserImages");
                 });
 
             modelBuilder.Entity("GestionaT.Persistence.Common.ApplicationRole", b =>
@@ -673,6 +828,17 @@ namespace GestionaT.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.BusinessImage", b =>
+                {
+                    b.HasOne("GestionaT.Domain.Entities.Business", "Business")
+                        .WithOne("Image")
+                        .HasForeignKey("GestionaT.Domain.Entities.BusinessImage", "BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Business");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Category", b =>
                 {
                     b.HasOne("GestionaT.Domain.Entities.Business", "Business")
@@ -681,7 +847,24 @@ namespace GestionaT.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionaT.Domain.Entities.Category", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId");
+
                     b.Navigation("Business");
+
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("GestionaT.Domain.Entities.CategoryImage", b =>
+                {
+                    b.HasOne("GestionaT.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Customer", b =>
@@ -755,6 +938,17 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.ProductImage", b =>
+                {
+                    b.HasOne("GestionaT.Domain.Entities.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("GestionaT.Persistence.Common.ApplicationUser", null)
@@ -811,6 +1005,15 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("GestionaT.Domain.Entities.UserImage", b =>
+                {
+                    b.HasOne("GestionaT.Persistence.Common.ApplicationUser", null)
+                        .WithOne("Image")
+                        .HasForeignKey("GestionaT.Domain.Entities.UserImage", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -870,6 +1073,8 @@ namespace GestionaT.Persistence.Migrations
 
                     b.Navigation("Customers");
 
+                    b.Navigation("Image");
+
                     b.Navigation("Invitations");
 
                     b.Navigation("Members");
@@ -893,6 +1098,8 @@ namespace GestionaT.Persistence.Migrations
 
             modelBuilder.Entity("GestionaT.Domain.Entities.Product", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("SaleProducts");
                 });
 
@@ -908,6 +1115,9 @@ namespace GestionaT.Persistence.Migrations
 
             modelBuilder.Entity("GestionaT.Persistence.Common.ApplicationUser", b =>
                 {
+                    b.Navigation("Image")
+                        .IsRequired();
+
                     b.Navigation("MemberBusinesses");
 
                     b.Navigation("OwnedBusinesses");

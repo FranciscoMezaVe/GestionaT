@@ -36,6 +36,7 @@ namespace GestionaT.Application.Features.Customers.Commands.CreateCustomer
             }
 
             var customer = _mapper.Map<Customer>(command.Request);
+            customer.BusinessId = command.BusinessId;
             await _unitOfWork.Repository<Customer>().AddAsync(customer);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

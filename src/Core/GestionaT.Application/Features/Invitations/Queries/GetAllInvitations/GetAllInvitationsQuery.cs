@@ -1,8 +1,8 @@
 ﻿using FluentResults;
-using GestionaT.Application.Features.Invitations.Queries.GetAllInvitations;
+using GestionaT.Application.Common.Pagination;
 using MediatR;
 
 namespace GestionaT.Application.Features.Invitations.Queries.GetAllInvitations
 {
-    public record GetAllInvitationsQuery(Guid businessId) : IRequest<Result<IEnumerable<InvitationResponse>>>;
+    public record GetAllInvitationsQuery(Guid businessId, PaginationFilters Filters) : IRequest<Result<PaginatedList<InvitationResponse>>>;
 }

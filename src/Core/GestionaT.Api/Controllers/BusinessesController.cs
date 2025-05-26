@@ -1,4 +1,5 @@
 ﻿using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Business.Commands.CreateBusinessCommand;
 using GestionaT.Application.Features.Business.Commands.DeleteBusinessCommand;
 using GestionaT.Application.Features.Business.Commands.UpdateBusinessCommand;
@@ -59,10 +60,10 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BusinessReponse>>> GetAllBusinesses()
+        public async Task<ActionResult<PaginatedList<BusinessReponse>>> GetAllBusinesses([FromQuery] PaginationFilters filters)
         {
             Guid userId = _currentUserService.UserId!.Value;
-            var result = await _mediator.Send(new GetAllBusinessesQuery(userId));
+            var result = await _mediator.Send(new GetAllBusinessesQuery(userId, filters));
 
             if (!result.IsSuccess)
             {
@@ -79,7 +80,7 @@ namespace GestionaT.Api.Controllers
                 });
             }
 
-            _logger.LogInformation("{businessesCount} negocios encontrados", result.Value.Count());
+            _logger.LogInformation("{businessesCount} negocios encontrados", result.Value.Items.Count);
             return Ok(result.Value);
         }
 

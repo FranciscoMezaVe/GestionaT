@@ -28,7 +28,7 @@ namespace GestionaT.Application.Features.Customers.Queries.GetCustomerById
         public async Task<Result<CustomerResponse>> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
         {
             var customer = _unitOfWork.Repository<Customer>()
-                .QueryIncluding(c => c.Business)
+                .Include(c => c.Business)
                 .FirstOrDefault(c => c.Id == request.Id && c.BusinessId == request.BusinessId);
 
             if (customer is null)

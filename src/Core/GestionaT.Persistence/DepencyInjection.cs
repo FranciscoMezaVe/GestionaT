@@ -1,5 +1,6 @@
 ﻿using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
+using GestionaT.Domain.Entities;
 using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace GestionaT.Persistence
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IBusinessRepository, BusinessRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISaleRepository, SaleRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             #endregion

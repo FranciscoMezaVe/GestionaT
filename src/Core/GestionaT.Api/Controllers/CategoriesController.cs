@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using GestionaT.Application.Features.Categories.Commands.UpdateCategory;
 using GestionaT.Application.Features.Categories.Commands.DeleteCategory;
 using GestionaT.Application.Features.Categories.Queries.GetCategoryById;
+using GestionaT.Application.Common.Pagination;
 
 [Route("api/businesses/{businessId}/[controller]")]
 [Authorize]
@@ -50,9 +51,9 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CategoryResponse>>> GetAllCategories(Guid businessId)
+    public async Task<ActionResult<PaginatedList<CategoryResponse>>> GetAllCategories(Guid businessId, [FromQuery] PaginationFilters filters)
     {
-        var result = await _mediator.Send(new GetAllCategoriesQuery(businessId));
+        var result = await _mediator.Send(new GetAllCategoriesQuery(businessId, filters));
 
         if (!result.IsSuccess)
         {

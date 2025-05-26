@@ -9,6 +9,10 @@ using GestionaT.Application.Features.Products.Queries.GetProductById;
 using GestionaT.Application.Features.Products.Commands.DeleteProduct;
 using Microsoft.AspNetCore.Authorization;
 using GestionaT.Infraestructure.Authorization;
+using GestionaT.Infraestructure.Images;
+using GestionaT.Application.Features.Products.Commands.DeleteProductImage;
+using GestionaT.Application.Features.Products.Commands.AddProductImages;
+using GestionaT.Application.Common.Pagination;
 
 namespace GestionaT.Api.Controllers
 {
@@ -28,7 +32,7 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateProductCommandRequest request, Guid businessId)
+        public async Task<ActionResult<Guid>> Create([FromForm] CreateProductCommandRequest request, [FromRoute] Guid businessId)
         {
             if (request == null)
             {
@@ -40,10 +44,10 @@ namespace GestionaT.Api.Controllers
 
             if (!result.IsSuccess)
             {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                return StatusCode(httpError.StatusCode, new
+                var httpError = result.Errors.OfType<HttpError>().FirstOrDefault();
+                return StatusCode(httpError?.StatusCode ?? 500, new
                 {
-                    Message = "Error al crear el producto.",
+                    Message = httpError?.Message ?? "Error al crear el producto.",
                     Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
                 });
             }
@@ -78,9 +82,9 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetAll(Guid businessId)
+        public async Task<ActionResult<PaginatedList<ProductResponse>>> GetAll(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
         {
-            var result = await _mediator.Send(new GetAllProductsQuery(businessId));
+            var result = await _mediator.Send(new GetAllProductsQuery(businessId, paginationFilters));
 
             if (!result.IsSuccess)
             {
@@ -128,6 +132,36 @@ namespace GestionaT.Api.Controllers
                     Message = "Error al eliminar el producto.",
                     Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
                 });
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{productId}/images/{productImageId}")]
+        public async Task<IActionResult> DeleteProductImage([FromRoute] Guid businessId, [FromRoute] Guid productId, [FromRoute] Guid productImageId)
+        {
+            var command = new DeleteProductImageCommand(businessId, productId, productImageId);
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.OfType<HttpError>().FirstOrDefault();
+                return StatusCode(error?.StatusCode ?? 500, new { error?.Message });
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("{productId}/images")]
+        public async Task<IActionResult> AddImages([FromRoute] Guid businessId, [FromRoute] Guid productId, [FromForm] List<IFormFile> images)
+        {
+            var command = new AddProductImagesCommand(businessId, productId, images);
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.OfType<HttpError>().FirstOrDefault();
+                return StatusCode(error?.StatusCode ?? 400, new { error?.Message });
             }
 
             return NoContent();

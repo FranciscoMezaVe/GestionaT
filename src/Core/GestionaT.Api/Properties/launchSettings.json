@@ -17,7 +17,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "PGSQLConnectionString": "Host=localhost;Port=5432;Database=gestionat_db;Username=postgres;Password=Mvfj2002",
-        "secret-key": "D1V8mA7KsG2E6z2+dHjKtvZAKZcLdMef3iCm5Zf96fU="
+        "secret-key": "D1V8mA7KsG2E6z2+dHjKtvZAKZcLdMef3iCm5Zf96fU=",
+        "CLOUDINARY_CLOUD_NAME": "dhz9xt4j2",
+        "CLOUDINARY_API_KEY": "771719699499958",
+        "CLOUDINARY_API_SECRET": "K3gesBQhFCm4mGZh8n5-tswN2bM"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7288;http://localhost:5244"

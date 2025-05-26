@@ -10,7 +10,7 @@ namespace GestionaT.Domain.Entities
         public Business Business { get; set; }
 
         public Guid CustomerId { get; set; }
-        public required Customer Customer { get; set; }
+        public Customer Customer { get; set; }
 
         public ICollection<SaleProduct> SaleProducts { get; set; }
         public bool IsDeleted { get; set; }

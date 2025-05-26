@@ -27,7 +27,7 @@ namespace GestionaT.Application.Features.Products.Queries.GetProductById
             var repository = _unitOfWork.Repository<Product>();
 
             var product = repository
-                .QueryIncluding(p => p.Category)
+                .Include(p => p.Category, p => p.Images)
                 .Where(p => p.Id == query.Id && p.BusinessId == query.BusinessId && !p.IsDeleted)
                 .FirstOrDefault();
 

@@ -78,7 +78,7 @@ namespace GestionaT.Persistence.Repositories
             return await Query().AnyAsync(predicate, cancellationToken);
         }
 
-        public IQueryable<TEntity> QueryIncluding(params Expression<Func<TEntity, object>>[] includes)
+        public IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = Query();
 
@@ -89,6 +89,5 @@ namespace GestionaT.Persistence.Repositories
 
             return query;
         }
-
     }
 }

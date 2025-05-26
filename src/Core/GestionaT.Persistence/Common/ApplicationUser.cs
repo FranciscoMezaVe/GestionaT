@@ -8,6 +8,7 @@ namespace GestionaT.Persistence.Common
         public ICollection<Business> OwnedBusinesses { get; set; }
         public ICollection<Members> MemberBusinesses { get; set; }
         public ICollection<RefreshToken> RefreshTokens { get; set; }
+        public UserImage Image { get; set; }
         public Guid CreatedBy { get; set; }
         public Guid ModifiedBy { get; set; }
         public DateTime CreatedOn { get; set; }

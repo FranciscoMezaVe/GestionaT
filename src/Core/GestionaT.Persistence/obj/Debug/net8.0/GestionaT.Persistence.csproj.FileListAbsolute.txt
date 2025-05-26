@@ -24,8 +24,10 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\De
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Persistence.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Application.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Domain.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Shared.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Application.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Domain.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Shared.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\Debug\net8.0\GestionaT.Persistence.csproj.AssemblyReference.cache
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\Debug\net8.0\GestionaT.Persistence.GeneratedMSBuildEditorConfig.editorconfig
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\Debug\net8.0\GestionaT.Persistence.AssemblyInfoInputs.cache
@@ -38,5 +40,3 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\De
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\Debug\net8.0\GestionaT.Persistence.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\Debug\net8.0\GestionaT.Persistence.genruntimeconfig.cache
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\obj\Debug\net8.0\ref\GestionaT.Persistence.dll
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Shared.dll
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Persistence\bin\Debug\net8.0\GestionaT.Shared.pdb

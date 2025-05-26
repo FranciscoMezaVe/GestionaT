@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Enums;
 using GestionaT.Shared.Abstractions;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
 {
-    public class GetAllMembersByBusinessQueryHandler : IRequestHandler<GetAllMembersByBusinessQuery, Result<IEnumerable<MembersResponse>>>
+    public class GetAllMembersByBusinessQueryHandler : IRequestHandler<GetAllMembersByBusinessQuery, Result<PaginatedList<MembersResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUserService;
@@ -28,7 +29,7 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
             _mapper = mapper;
         }
 
-        public async Task<Result<IEnumerable<MembersResponse>>> Handle(GetAllMembersByBusinessQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PaginatedList<MembersResponse>>> Handle(GetAllMembersByBusinessQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId!.Value;
 
@@ -43,17 +44,16 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
 
             // Traer miembros con Role incluido
             var activeMembers = _unitOfWork.Repository<Domain.Entities.Members>()
-                .QueryIncluding(p => p.Role)
-                .Where(m => m.BusinessId == request.BusinessId && m.Active == Status.Active)
-                .ToList();
+                .Include(p => p.Role)
+                .Where(m => m.BusinessId == request.BusinessId && m.Active == Status.Active);
 
-            if (activeMembers.Count == 0)
+            if (!activeMembers.Any())
             {
                 _logger.LogInformation("No se encontraron miembros activos para el negocio {BusinessId}.", request.BusinessId);
                 return Result.Fail(new HttpError("No se encontraron miembros activos.", ResultStatusCode.NotFound));
             }
 
-            var response = _mapper.Map<IEnumerable<MembersResponse>>(activeMembers);
+            var response = activeMembers.ToPagedList<Domain.Entities.Members, MembersResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);
 
             return Result.Ok(response);
         }

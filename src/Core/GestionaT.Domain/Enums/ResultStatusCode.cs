@@ -12,5 +12,6 @@
         public const int InternalError = 500;
         public const int UnprocesableContent = 422;
         public const int NoContent = 204;
+        public const int InternalServerError = 500;
     }
 }

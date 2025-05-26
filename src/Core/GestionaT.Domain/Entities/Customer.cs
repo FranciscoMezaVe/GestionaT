@@ -9,7 +9,7 @@ namespace GestionaT.Domain.Entities
         public string? ZipCode { get; set; }
         public string? Address { get; set; }
         public Guid BusinessId { get; set; }
-        public required Business Business { get; set; }
+        public Business Business { get; set; }
         public ICollection<Sale> Sales { get; set; }
         public bool IsDeleted { get; set; }
     }

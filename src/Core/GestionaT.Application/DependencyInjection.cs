@@ -1,5 +1,5 @@
-﻿using GestionaT.Application.Behaviors;
-using GestionaT.Application.Interfaces.Auth;
+﻿using FluentValidation;
+using GestionaT.Application.Behaviors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +15,10 @@ namespace GestionaT.Application
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssembly(assembly);
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
+
+            services.AddValidatorsFromAssembly(assembly);
 
             return services;
         }

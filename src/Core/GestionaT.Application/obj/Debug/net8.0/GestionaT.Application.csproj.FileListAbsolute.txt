@@ -18,7 +18,9 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\De
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Application.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Application.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Domain.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Shared.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Domain.pdb
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Shared.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.csproj.AssemblyReference.cache
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.GeneratedMSBuildEditorConfig.editorconfig
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.AssemblyInfoInputs.cache
@@ -30,5 +32,3 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\De
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\Debug\net8.0\refint\GestionaT.Application.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\Debug\net8.0\GestionaT.Application.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\obj\Debug\net8.0\ref\GestionaT.Application.dll
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Shared.dll
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application\bin\Debug\net8.0\GestionaT.Shared.pdb

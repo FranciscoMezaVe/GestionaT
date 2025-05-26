@@ -1,4 +1,5 @@
 ﻿using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Roles;
 using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
 using GestionaT.Application.Features.Roles.Commands.DeleteRoleCommand;
@@ -59,9 +60,9 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RolesResponse>>> GetAllRoles(Guid businessId)
+        public async Task<ActionResult<PaginatedList<RolesResponse>>> GetAllRoles(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
         {
-            var result = await _mediator.Send(new GetAllRolesQuery(businessId));
+            var result = await _mediator.Send(new GetAllRolesQuery(businessId, paginationFilters));
             if (!result.IsSuccess)
             {
                 var httpError = result.Errors.OfType<HttpError>().First();

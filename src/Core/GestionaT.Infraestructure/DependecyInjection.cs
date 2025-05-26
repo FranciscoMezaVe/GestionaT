@@ -8,9 +8,12 @@ using GestionaT.Persistence.PGSQL;
 using GestionaT.Persistence.Common;
 using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Infraestructure.Auth;
-using GestionaT.Infraestructure.Authorization;
-using Microsoft.AspNetCore.Authorization;
 using GestionaT.Shared.Abstractions;
+using GestionaT.Application.Interfaces.Reports;
+using GestionaT.Infraestructure.Reports;
+using GestionaT.Application.Interfaces.Images;
+using GestionaT.Infraestructure.Common.Images;
+using GestionaT.Infraestructure.Images;
 
 namespace GestionaT.Infraestructure
 {
@@ -49,6 +52,14 @@ namespace GestionaT.Infraestructure
 
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            services.AddTransient<IReportService, ReportServiceRazorLight>();
+
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
+            services.AddScoped<IImageStorageService, CloudinaryImageStorageService>();
+            services.AddScoped<IProductImageStorageService, ProductImageService>();
+
 
             return services;
         }

@@ -13,6 +13,7 @@ namespace GestionaT.Domain.Entities
         public ICollection<Role> Roles { get; set; }
         public ICollection<Category> Categories { get; set; }
         public ICollection<Invitation> Invitations { get; set; }
+        public BusinessImage? Image { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

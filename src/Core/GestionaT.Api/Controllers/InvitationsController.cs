@@ -1,4 +1,5 @@
 ﻿using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Invitations.Commands.AcceptInvitationCommand;
 using GestionaT.Application.Features.Invitations.Commands.CreateInvitation;
 using GestionaT.Application.Features.Invitations.Commands.CreateInvitationCommand;
@@ -60,9 +61,9 @@ namespace GestionaT.API.Controllers
 
         [AuthorizeBusinessAccess("businessId")]
         [HttpGet("businesses/{businessId}/[controller]")]
-        public async Task<ActionResult<IEnumerable<InvitationResponse>>> GetAllInvitation(Guid businessId)
+        public async Task<ActionResult<IEnumerable<InvitationResponse>>> GetAllInvitation(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
         {
-            var result = await _mediator.Send(new GetAllInvitationsQuery(businessId));
+            var result = await _mediator.Send(new GetAllInvitationsQuery(businessId, paginationFilters));
 
             if (!result.IsSuccess)
             {
@@ -80,7 +81,7 @@ namespace GestionaT.API.Controllers
                 });
             }
 
-            _logger.LogInformation("Invitaciones consultadas correctamente, se econtraron: {invitationId}", result.Value.Count());
+            _logger.LogInformation("Invitaciones consultadas correctamente, se econtraron: {invitationId}", result.Value.Items.Count);
             return Ok(result.Value);
         }
 
@@ -135,9 +136,9 @@ namespace GestionaT.API.Controllers
         }
 
         [HttpGet("[controller]")]
-        public async Task<ActionResult<IEnumerable<InvitationResponse>>> GetAllInvitationByUser([FromQuery] GetAllInvitationByUserQueryFilters filters)
+        public async Task<ActionResult<IEnumerable<InvitationResponse>>> GetAllInvitationByUser([FromQuery] GetAllInvitationByUserQueryFilters filters, [FromQuery] PaginationFilters paginationFilters)
         {
-            var result = await _mediator.Send(new GetAllInvitationByUserQuery(filters));
+            var result = await _mediator.Send(new GetAllInvitationByUserQuery(filters, paginationFilters));
 
             if (!result.IsSuccess)
             {
@@ -155,7 +156,7 @@ namespace GestionaT.API.Controllers
                 });
             }
 
-            _logger.LogInformation("Invitaciones consultadas correctamente, se econtraron: {invitationId}", result.Value.Count());
+            _logger.LogInformation("Invitaciones consultadas correctamente, se econtraron: {invitationId}", result.Value.Items.Count);
             return Ok(result.Value);
         }
     }

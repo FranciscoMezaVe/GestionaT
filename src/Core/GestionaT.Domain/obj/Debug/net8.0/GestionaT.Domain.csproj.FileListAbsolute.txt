@@ -10,6 +10,9 @@ D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Domain\obj\Debug\net8.0\Ges
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Domain\obj\Debug\net8.0\refint\GestionaT.Domain.dll
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Domain\obj\Debug\net8.0\GestionaT.Domain.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\GestionaT.Domain\obj\Debug\net8.0\ref\GestionaT.Domain.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\bin\Debug\net8.0\GestionaT.Domain.deps.json
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\bin\Debug\net8.0\GestionaT.Domain.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\bin\Debug\net8.0\GestionaT.Domain.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\GestionaT.Domain.GeneratedMSBuildEditorConfig.editorconfig
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\GestionaT.Domain.AssemblyInfoInputs.cache
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\GestionaT.Domain.AssemblyInfo.cs
@@ -18,7 +21,4 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\n
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\GestionaT.Domain.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\refint\GestionaT.Domain.dll
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\GestionaT.Domain.pdb
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\bin\Debug\net8.0\GestionaT.Domain.deps.json
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\bin\Debug\net8.0\GestionaT.Domain.dll
-D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\bin\Debug\net8.0\GestionaT.Domain.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Domain\obj\Debug\net8.0\ref\GestionaT.Domain.dll

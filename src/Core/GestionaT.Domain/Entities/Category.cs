@@ -10,6 +10,7 @@ namespace GestionaT.Domain.Entities
         public Business Business { get; set; } = default!;
 
         public ICollection<Product> Products { get; set; } = new List<Product>();
+        public Category? Image { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

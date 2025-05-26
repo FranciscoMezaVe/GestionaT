@@ -8,12 +8,15 @@ public class ProductProfile : Profile
 {
     public ProductProfile()
     {
-        CreateMap<CreateProductCommandRequest, Product>();
+        CreateMap<CreateProductCommandRequest, Product>()
+            .ForMember(dest => dest.Images, opt => opt.Ignore());
 
         CreateMap<UpdateProductCommandRequest, Product>()
             .ForMember(dest => dest.CategoryId, opt => opt.Ignore());
 
         CreateMap<Product, ProductResponse>()
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.Images, opt => opt.MapFrom(src =>
+                src.Images.Select(i => new ProductImages(i.ImageUrl, i.Id, i.PublicId)).ToList()));
     }
 }

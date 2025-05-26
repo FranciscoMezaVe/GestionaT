@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using GestionaT.Infraestructure.Authorization;
 using GestionaT.Application.Features.Customers;
+using GestionaT.Application.Common.Pagination;
 
 namespace GestionaT.Api.Controllers
 {
@@ -78,9 +79,9 @@ namespace GestionaT.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerResponse>>> GetAll(Guid businessId)
+        public async Task<ActionResult<IEnumerable<CustomerResponse>>> GetAll(Guid businessId, [FromQuery] PaginationFilters filters)
         {
-            var result = await _mediator.Send(new GetAllCustomersQuery(businessId));
+            var result = await _mediator.Send(new GetAllCustomersQuery(businessId, filters));
 
             if (!result.IsSuccess)
             {

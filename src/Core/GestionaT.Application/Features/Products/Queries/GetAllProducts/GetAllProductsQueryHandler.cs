@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using FluentResults;
+using GestionaT.Application.Common;
+using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
+using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace GestionaT.Application.Features.Products.Queries.GetAllProducts
 {
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<List<ProductResponse>>>
+    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<PaginatedList<ProductResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -20,16 +23,22 @@ namespace GestionaT.Application.Features.Products.Queries.GetAllProducts
             _logger = logger;
         }
 
-        public async Task<Result<List<ProductResponse>>> Handle(GetAllProductsQuery query, CancellationToken cancellationToken)
+        public async Task<Result<PaginatedList<ProductResponse>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
             var products = _unitOfWork.Repository<Product>()
-                .QueryIncluding(p => p.Category)
-                .Where(p => p.BusinessId == query.BusinessId && !p.IsDeleted)
-                .ToList();
+                .Include(p => p.Category, p => p.Images)
+                .Where(p => p.BusinessId == request.BusinessId && !p.IsDeleted);
 
-            var response = _mapper.Map<List<ProductResponse>>(products);
+            if (!products.Any())
+            {
+                //logging
+                _logger.LogWarning("No se encontraron productos, negocio {negocio}", request.BusinessId);
+                return Result.Fail(new HttpError($"No se encontraron productos", ResultStatusCode.NotFound));
+            }
 
-            _logger.LogInformation("Se obtuvieron {Count} productos del negocio {BusinessId}", response.Count, query.BusinessId);
+            var response = products.ToPagedList<Product, ProductResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);
+
+            _logger.LogInformation("Se obtuvieron {Count} productos del negocio {BusinessId}", response.Items.Count, request.BusinessId);
             return Result.Ok(response);
         }
     }

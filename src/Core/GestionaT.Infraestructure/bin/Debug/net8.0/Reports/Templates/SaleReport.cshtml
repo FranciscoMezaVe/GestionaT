@@ -1,0 +1,121 @@
+﻿@model IEnumerable<GestionaT.Domain.Entities.Sale>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Reporte de Ventas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        .nested-table {
+            margin-top: 10px;
+        }
+
+            .nested-table th, .nested-table td {
+                border: 1px solid #bbb;
+                font-size: 0.9em;
+                padding: 6px;
+            }
+
+            .nested-table th {
+                background-color: #ddd;
+            }
+
+        .customer-block {
+            margin-bottom: 40px;
+        }
+
+        .total-customer {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Ventas</h1>
+
+    @{
+        var grouped = Model.GroupBy(s => s.Customer.Id);
+        int i = 1;
+        decimal totalGeneral = 0;
+    }
+
+    @foreach (var group in grouped)
+    {
+        var customerName = group.First().Customer.Name;
+        decimal totalCliente = 0;
+
+        <div class="customer-block">
+            <h3>@i. Cliente: @customerName</h3>
+
+            <table class="nested-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sale in group)
+                    {
+                        foreach (var sp in sale.SaleProducts)
+                        {
+                            var subtotal = sp.Quantity * sp.Product.Price;
+                            totalCliente += subtotal;
+
+                            <tr>
+                                <td>@sale.Date.ToString("dd/MM/yyyy")</td>
+                                <td>@sp.Product.Name</td>
+                                <td>@sp.Quantity</td>
+                                <td>@sp.Product.Price.ToString("C")</td>
+                                <td>@subtotal.ToString("C")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <p class="total-customer">Total del cliente: @totalCliente.ToString("C")</p>
+        </div>
+
+        i++;
+        totalGeneral += totalCliente;
+    }
+
+    <hr />
+    <p style="text-align:right; font-size:1.1em; font-weight:bold;">
+        Total general de ventas: @totalGeneral.ToString("C")
+    </p>
+
+    <p style="text-align:center; margin-top:50px; font-size:0.9em;">
+        Generado el @DateTime.Now.ToString("f")
+    </p>
+</body>
+</html>

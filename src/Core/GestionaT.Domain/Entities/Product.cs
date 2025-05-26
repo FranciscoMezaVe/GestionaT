@@ -11,6 +11,7 @@ namespace GestionaT.Domain.Entities
         public Guid CategoryId { get; set; }
         public required Category Category { get; set; }
         public ICollection<SaleProduct> SaleProducts { get; set; }
+        public ICollection<ProductImage> Images { get; set; } = [];
         public bool IsDeleted { get; set; }
     }
 }
