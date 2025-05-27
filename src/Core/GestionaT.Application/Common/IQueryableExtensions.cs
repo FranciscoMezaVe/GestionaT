@@ -23,5 +23,24 @@ namespace GestionaT.Application.Common
 
             return new PaginatedList<TDto>(items, totalCount, pageIndex, pageSize);
         }
+
+        public static PaginatedList<TDto> ToPagedList<TEntity, TDto>(
+            this IList<TEntity> source,
+            IMapper mapper,
+            int pageIndex,
+            int pageSize)
+            where TEntity : class
+        {
+            var totalCount = source.Count;
+
+            var items = source
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var mappedItems = mapper.Map<List<TDto>>(items);
+
+            return new PaginatedList<TDto>(mappedItems, totalCount, pageIndex, pageSize);
+        }
     }
 }

@@ -11,7 +11,10 @@ namespace GestionaT.Application.Profiles
         public BusinessProfile()
         {
             CreateMap<CreateBusinessCommand, Business>();
-            CreateMap<Business, BusinessReponse>();
+
+            CreateMap<Business, BusinessReponse>()
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Image.ImageUrl));
+
             CreateMap<UpdateBusinessDto, Business>();
         }
     }

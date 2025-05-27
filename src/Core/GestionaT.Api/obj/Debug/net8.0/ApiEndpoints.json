@@ -256,7 +256,33 @@
   },
   {
     "ContainingType": "CategoriesController",
-    "Method": "GetCategoruById",
+    "Method": "UploadCategoryImage",
+    "RelativePath": "api/businesses/{businessId}/Categories/{categoryId}/images",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "businessId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CategoriesController",
+    "Method": "GetCategoryById",
     "RelativePath": "api/businesses/{businessId}/Categories/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -275,7 +301,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[GestionaT.Application.Features.Categories.Queries.CategoryResponse, GestionaT.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "GestionaT.Application.Features.Categories.Queries.CategoryResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -471,6 +497,27 @@
       },
       {
         "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestionaT.Api.Controllers.BusinessesController",
+    "Method": "UploadCategoryImage",
+    "RelativePath": "api/Businesses/{businessId}/images",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "businessId",
         "Type": "System.Guid",
         "IsRequired": true
       }

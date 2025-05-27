@@ -3,9 +3,11 @@ using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Business.Commands.CreateBusinessCommand;
 using GestionaT.Application.Features.Business.Commands.DeleteBusinessCommand;
 using GestionaT.Application.Features.Business.Commands.UpdateBusinessCommand;
+using GestionaT.Application.Features.Business.Commands.UploadBusinessImage;
 using GestionaT.Application.Features.Business.Queries;
 using GestionaT.Application.Features.Business.Queries.GetAllBusinessesQuery;
 using GestionaT.Application.Features.Business.Queries.GetBusinessByIdQuery;
+using GestionaT.Application.Features.Categories.Commands.UploadCategoryImage;
 using GestionaT.Infraestructure.Authorization;
 using GestionaT.Shared.Abstractions;
 using MediatR;
@@ -161,6 +163,30 @@ namespace GestionaT.Api.Controllers
 
             _logger.LogInformation("Negocio actualizado correctamente.");
             return NoContent();
+        }
+
+        [AuthorizeBusinessAccess("businessId")]
+        [HttpPost("{businessId}/images")]
+        public async Task<IActionResult> UploadCategoryImage([FromForm] UploadCategoryImageCommandRequest request, [FromRoute] Guid businessId)
+        {
+            var result = await _mediator.Send(new UploadBusinessImageCommand(businessId, request.Image));
+
+            if (!result.IsSuccess)
+            {
+                var httpError = result.Errors.OfType<HttpError>().First();
+                _logger.LogInformation("Sucedio un error al subir la imagen.");
+                return StatusCode(httpError.StatusCode, new
+                {
+                    Message = "Error al subir la imagen.",
+                    Errors = result.Errors.Select(e => new
+                    {
+                        e.Message,
+                        e.Reasons
+                    })
+                });
+            }
+            _logger.LogInformation("imagen subida: {url}", result.Value);
+            return Ok(result.Value);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace GestionaT.Application.Features.Business.Queries.GetBusinessByIdQuery
 
         public Task<Result<BusinessReponse>> Handle(GetBusinessByIdQuery request, CancellationToken cancellationToken)
         {
-            var business = _businessRepository.Query()
+            var business = _businessRepository.Include(b => b.Image)
                 .FirstOrDefault(x => x.Id == request.BusinessId);
 
             if (business is null)

@@ -27,9 +27,11 @@ namespace GestionaT.Application.Features.Categories.Queries.GetCategoryById
                 _logger.LogInformation("Mapeando peticion");
 
                 _logger.LogInformation("Consultando en base de datos");
-                var category = await _unitOfWork.Repository<Category>().GetByIdAsync(request.Id);
+                var category = _unitOfWork.Repository<Category>()
+                    .Include(c => c.Image)
+                    .FirstOrDefault(c => c.Id == request.Id);
 
-                if(category is null)
+                if (category is null)
                 {
                     _logger.LogInformation("Categoria no encontrada");
                     return Result.Fail(new Error("Categoria no encontrada"));

@@ -33,7 +33,7 @@ namespace GestionaT.Application.Features.Business.Queries.GetAllBusinessesQuery
                 return Result.Fail(new HttpError("No se encontraron negocios", ResultStatusCode.NoContent));
             }
 
-            var response = businesses.AsQueryable().ToPagedList<Domain.Entities.Business, BusinessReponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);
+            var response = businesses.ToPagedList<Domain.Entities.Business, BusinessReponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);
 
             _logger.LogInformation("Se encontraron {BusinessCount} negocios en la base de datos", response.Items.Count);
 

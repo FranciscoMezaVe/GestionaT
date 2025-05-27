@@ -10,6 +10,7 @@ using GestionaT.Application.Features.Categories.Commands.UpdateCategory;
 using GestionaT.Application.Features.Categories.Commands.DeleteCategory;
 using GestionaT.Application.Features.Categories.Queries.GetCategoryById;
 using GestionaT.Application.Common.Pagination;
+using GestionaT.Application.Features.Categories.Commands.UploadCategoryImage;
 
 [Route("api/businesses/{businessId}/[controller]")]
 [Authorize]
@@ -64,7 +65,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<List<CategoryResponse>>> GetCategoruById(Guid businessId, Guid id)
+    public async Task<ActionResult<CategoryResponse>> GetCategoryById(Guid businessId, Guid id)
     {
         var result = await _mediator.Send(new GetCategoryByIdQuery(id));
 
@@ -110,6 +111,29 @@ public class CategoriesController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpPost("{categoryId}/images")]
+    public async Task<IActionResult> UploadCategoryImage([FromForm] UploadCategoryImageCommandRequest request, [FromRoute] Guid categoryId, [FromRoute] Guid businessId)
+    {
+        var result = await _mediator.Send(new UploadCategoryImageCommand(request.Image, businessId, categoryId));
+
+        if (!result.IsSuccess)
+        {
+            var httpError = result.Errors.OfType<HttpError>().First();
+            _logger.LogInformation("Sucedio un error al subir la imagen.");
+            return StatusCode(httpError.StatusCode, new
+            {
+                Message = "Error al subir la imagen.",
+                Errors = result.Errors.Select(e => new
+                {
+                    e.Message,
+                    e.Reasons
+                })
+            });
+        }
+        _logger.LogInformation("imagen subida: {url}", result.Value);
+        return Ok(result.Value);
     }
 
 }

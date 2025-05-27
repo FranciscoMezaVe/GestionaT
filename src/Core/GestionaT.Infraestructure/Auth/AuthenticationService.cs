@@ -111,7 +111,7 @@ namespace GestionaT.Infraestructure.Auth
 
         public async Task<Result<Guid>> RegisterUserAsync(string email, string userName, string password)
         {
-            var user = new ApplicationUser { UserName = email, Email = email, NormalizedUserName = userName.ToUpper() };
+            var user = new ApplicationUser { UserName = userName, Email = email };
             var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)

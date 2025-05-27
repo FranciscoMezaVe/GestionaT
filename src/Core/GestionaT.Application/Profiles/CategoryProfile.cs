@@ -11,7 +11,10 @@ namespace GestionaT.Application.Profiles
         public CategoryProfile()
         {
             CreateMap<CreateCategoryCommandRequest, Category>();
-            CreateMap<Category, CategoryResponse>();
+
+            CreateMap<Category, CategoryResponse>()
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Image.ImageUrl));
+
             CreateMap<UpdateCategoryCommandRequest, Category>();
         }
     }

@@ -27,7 +27,7 @@ namespace GestionaT.Application.Features.Categories.Queries.GetAllCategories
         public Task<Result<PaginatedList<CategoryResponse>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
             var categories = _unitOfWork.Repository<Category>()
-                .Query()
+                .Include(c => c.Image)
                 .Where(c => c.BusinessId == request.BusinessId);
 
             if (!categories.Any())
