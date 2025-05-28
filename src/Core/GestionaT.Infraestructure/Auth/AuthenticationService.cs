@@ -1,5 +1,8 @@
 ﻿using FluentResults;
 using GestionaT.Application.Interfaces.Auth;
+using GestionaT.Application.Interfaces.UnitOfWork;
+using GestionaT.Domain.Entities;
+using GestionaT.Domain.ValueObjects;
 using GestionaT.Persistence.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +15,14 @@ namespace GestionaT.Infraestructure.Auth
         private UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private ILogger<AuthenticationService> _logger;
+        private IUnitOfWork _unitOfWork;
 
-        public AuthenticationService(UserManager<ApplicationUser> userManager, ILogger<AuthenticationService> logger, SignInManager<ApplicationUser> signInManager)
+        public AuthenticationService(UserManager<ApplicationUser> userManager, ILogger<AuthenticationService> logger, SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _logger = logger;
             _signInManager = signInManager;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<bool> Authenticate(string email, string password)
@@ -142,6 +147,35 @@ namespace GestionaT.Infraestructure.Auth
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             return user.Email!;
+        }
+
+        public async Task<Result<Guid>> RegisterUserOAuthAsync(OAuthUserInfoResult user)
+        {
+            var applicationUser = new ApplicationUser
+            {
+                UserName = user.Name,
+                Email = user.Email
+            };
+
+            applicationUser.UserName = user.Name.Replace(" ", "_").ToLower();
+
+            var oauthProvider = new OAuthProviders
+            {
+                ExternalProvider = user.Provider,
+                ExternalProviderId = user.Id,
+                UserId = applicationUser.Id
+            };
+
+            applicationUser.Provider = oauthProvider;
+            var result = await _userManager.CreateAsync(applicationUser);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => new Error(e.Code).CausedBy(e.Description));
+                return Result.Fail<Guid>(errors);
+            }
+
+            return Result.Ok(applicationUser.Id);
         }
     }
 }

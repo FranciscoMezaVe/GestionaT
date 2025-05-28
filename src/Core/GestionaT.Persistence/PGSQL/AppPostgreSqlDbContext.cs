@@ -26,11 +26,12 @@ namespace GestionaT.Persistence.PGSQL
         public DbSet<Members> Members => Set<Members>();
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<Permission> Permissions => Set<Permission>();
-        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<ProductImage> ProductImages => Set<ProductImage>();
         public DbSet<CategoryImage> CategoryImages => Set<CategoryImage>();
         public DbSet<BusinessImage> BusinessImages => Set<BusinessImage>();
         public DbSet<UserImage> UserImages => Set<UserImage>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<OAuthProviders> OAuthProviders => Set<OAuthProviders>();
 
         // Auditado automático
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

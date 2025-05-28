@@ -1,8 +1,11 @@
 ﻿using GestionaT.Application.Common;
 using GestionaT.Application.Features.Auth.Commands.LoginCommand;
+using GestionaT.Application.Features.Auth.Commands.LogoutCommand;
+using GestionaT.Application.Features.Auth.Commands.OAuthLoginCommand;
 using GestionaT.Application.Features.Auth.Commands.RefreshTokenCommand;
 using GestionaT.Application.Features.Auth.Commands.RegisterCommand;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionaT.Api.Controllers
@@ -83,6 +86,45 @@ namespace GestionaT.Api.Controllers
         public async Task<IActionResult> Register(RegisterCommandRequest request)
         {
             var result = await _mediator.Send(new RegisterCommand(request));
+
+            if (result.IsFailed)
+            {
+                // Extraer todos los mensajes de error de Result
+                var errors = result.Errors
+                    .SelectMany(e => e.Reasons)
+                    .Select(r => r.Message)
+                    .ToList();
+
+                return BadRequest(new { errors });
+            }
+
+            return Ok(result.Value);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _mediator.Send(new LogoutCommand());
+
+            if (result.IsFailed)
+            {
+                // Extraer todos los mensajes de error de Result
+                var errors = result.Errors
+                    .SelectMany(e => e.Reasons)
+                    .Select(r => r.Message)
+                    .ToList();
+
+                return BadRequest(errors);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("oauth-login")]
+        public async Task<IActionResult> OAuthLogin([FromBody] OAuthLoginCommand request)
+        {
+            var result = await _mediator.Send(request);
 
             if (result.IsFailed)
             {

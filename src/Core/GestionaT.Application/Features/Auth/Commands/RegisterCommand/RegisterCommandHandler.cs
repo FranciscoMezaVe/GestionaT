@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
 using FluentResults;
+using GestionaT.Application.Common;
 using GestionaT.Application.Interfaces.Auth;
+using GestionaT.Application.Interfaces.Repositories;
+using GestionaT.Application.Interfaces.UnitOfWork;
+using GestionaT.Domain.Entities;
+using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,18 +15,41 @@ namespace GestionaT.Application.Features.Auth.Commands.RegisterCommand
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<RegisterCommand> _logger;
 
-        public RegisterCommandHandler(IAuthenticationService authenticationService, IMapper mapper, ILogger<RegisterCommand> logger)
+        public RegisterCommandHandler(IAuthenticationService authenticationService, IMapper mapper, ILogger<RegisterCommand> logger, IUnitOfWork unitOfWork, IUserRepository userRepository)
         {
             _authenticationService = authenticationService;
             _mapper = mapper;
             _logger = logger;
+            _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
         }
 
         public async Task<Result<Guid>> Handle(RegisterCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Registrando usuario {Email}", command.request.Email);
+
+            var user = await _userRepository.GetByEmailAsync(command.request.Email);
+
+            if (user is not null)
+            {
+                var providerUser = _unitOfWork.Repository<OAuthProviders>().Query()
+                    .FirstOrDefault(p => p.UserId == user.Id);
+
+                if (providerUser is not null)
+                {
+                    _logger.LogWarning("El usuario {Email} ya está registrado con el proveedor {Provider}.", command.request.Email, providerUser.ExternalProvider);
+                    return Result.Fail(new HttpError("Auth.UserAlreadyExists", ResultStatusCode.BadRequest)
+                        .CausedBy($"El usuario ya está registrado con el proveedor '{providerUser.ExternalProvider}'."));
+                }
+
+                _logger.LogWarning("El usuario {Email} ya existe pero no está vinculado a un proveedor OAuth.", command.request.Email);
+                return Result.Fail(new HttpError("Auth.UserAlreadyExists", ResultStatusCode.BadRequest)
+                    .CausedBy("El usuario ya esta registrado con ese correo."));
+            }
 
             var result = await _authenticationService.RegisterUserAsync(command.request.Email, command.request.UserName, command.request.Password);
 

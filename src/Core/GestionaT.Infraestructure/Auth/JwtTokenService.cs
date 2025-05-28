@@ -59,9 +59,7 @@ namespace GestionaT.Infraestructure.Auth
                 .FirstOrDefault(x => x.UserId == userId && !x.IsUsed && !x.IsRevoked && x.Expires > DateTime.UtcNow);
             if (currentToken is not null)
             {
-                currentToken.IsUsed = true;
-                _unitOfWork.Repository<RefreshToken>().Update(currentToken);
-                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<RefreshToken>().Remove(currentToken);
             }
             
             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -77,6 +75,24 @@ namespace GestionaT.Infraestructure.Auth
             await _unitOfWork.SaveChangesAsync();
 
             return refreshToken;
+        }
+
+        public async Task<bool> RemoveRefreshTokenAsync(Guid userId)
+        {
+            var refreshTokenRepository = _unitOfWork.Repository<RefreshToken>();
+            var currentToken = refreshTokenRepository
+                .Query()
+                .FirstOrDefault(x => x.UserId == userId && !x.IsUsed && !x.IsRevoked && x.Expires > DateTime.UtcNow);
+
+            if (currentToken is null)
+            {
+                return false;
+            }
+
+            refreshTokenRepository.Remove(currentToken);
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
         }
     }
 }

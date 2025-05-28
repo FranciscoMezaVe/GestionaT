@@ -60,5 +60,11 @@ namespace GestionaT.Persistence.Repositories
             var all = await GetAllAsync();
             return all.Any(predicate);
         }
+
+        public async Task<UserDto?> GetByEmailAsync(string email)
+        {
+            var user = await Query().FirstOrDefaultAsync(u => u.Email == email);
+            return user is null ? null : ProjectToDto(user);
+        }
     }
 }

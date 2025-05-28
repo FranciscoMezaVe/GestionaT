@@ -299,6 +299,45 @@ namespace GestionaT.Persistence.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.OAuthProviders", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalProviderId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("isRevone")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("OAuthProviders");
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Permission", b =>
                 {
                     b.Property<Guid>("Id")
@@ -902,6 +941,15 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("GestionaT.Domain.Entities.OAuthProviders", b =>
+                {
+                    b.HasOne("GestionaT.Persistence.Common.ApplicationUser", null)
+                        .WithOne("Provider")
+                        .HasForeignKey("GestionaT.Domain.Entities.OAuthProviders", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GestionaT.Domain.Entities.Permission", b =>
                 {
                     b.HasOne("GestionaT.Domain.Entities.Role", null)
@@ -1113,6 +1161,9 @@ namespace GestionaT.Persistence.Migrations
                     b.Navigation("MemberBusinesses");
 
                     b.Navigation("OwnedBusinesses");
+
+                    b.Navigation("Provider")
+                        .IsRequired();
 
                     b.Navigation("RefreshTokens");
                 });

@@ -14,6 +14,7 @@ using GestionaT.Infraestructure.Reports;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Infraestructure.Common.Images;
 using GestionaT.Infraestructure.Images;
+using GestionaT.Infraestructure.Auth.OAuths;
 
 namespace GestionaT.Infraestructure
 {
@@ -59,6 +60,10 @@ namespace GestionaT.Infraestructure
 
             services.AddScoped<IImageStorageService, CloudinaryImageStorageService>();
             services.AddScoped<IProductImageStorageService, ProductImageService>();
+
+            services.AddHttpClient();
+            services.AddScoped<IOAuthService, FacebookAuthService>();
+            services.AddScoped<IOAuthServiceFactory, OAuthServiceFactory>();
 
 
             return services;
