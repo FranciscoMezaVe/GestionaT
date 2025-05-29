@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Reports;
 using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
@@ -50,7 +51,7 @@ namespace GestionaT.Application.Features.Sales.Queries.GetReportSales
             {
                 _logger.LogWarning("No se encontraron ventas para el negocio {BusinessId}", request.BusinessId);
                 return Result.Fail(
-                        new HttpError("No se encontraron ventas.", ResultStatusCode.NotFound));
+                        AppErrorFactory.NotFound("Sales", request.BusinessId));
             }
 
             var report = await _reportService.GenerateSaleReportPdfAsync(sales);

@@ -1,9 +1,8 @@
 ﻿using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -36,7 +35,7 @@ namespace GestionaT.Application.Features.Products.Commands.DeleteProductImage
             if (product == null)
             {
                 _logger.LogWarning("Producto no encontrado o no pertenece al negocio. ProductId: {ProductId}, BusinessId: {BusinessId}", command.ProductId, command.BusinessId);
-                return Result.Fail(new HttpError("Producto no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.ProductId), command.ProductId));
             }
 
             // Validar que la imagen exista y pertenezca al producto
@@ -46,7 +45,7 @@ namespace GestionaT.Application.Features.Products.Commands.DeleteProductImage
             if (image == null)
             {
                 _logger.LogWarning("Imagen no encontrada o no pertenece al producto. ImageId: {ImageId}, ProductId: {ProductId}", command.ProductImageId, command.ProductId);
-                return Result.Fail(new HttpError("Imagen no encontrada para el producto especificado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.ProductImageId), command.ProductImageId));
             }
 
             // Eliminar la imagen usando el servicio

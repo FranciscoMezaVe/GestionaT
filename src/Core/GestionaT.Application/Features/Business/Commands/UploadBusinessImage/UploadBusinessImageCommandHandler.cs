@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using FluentResults;
-using GestionaT.Application.Common;
+﻿using FluentResults;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +28,7 @@ namespace GestionaT.Application.Features.Business.Commands.UploadBusinessImage
 
             var business = await businessRepository.GetByIdAsync(command.BusinessId);
             if (business is null)
-                return Result.Fail(new HttpError("Negocio no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.BusinessId), command.BusinessId));
 
             var ImageExists = businessImageRepository.Query()
                 .FirstOrDefault(img => img.BusinessId == command.BusinessId);
@@ -40,7 +38,7 @@ namespace GestionaT.Application.Features.Business.Commands.UploadBusinessImage
                 var isDelete = await _imageStorageService.DeleteImageAsync(ImageExists.PublicId);
                 if (!isDelete)
                 {
-                    return Result.Fail(new HttpError("No se pudo eliminar la imagen anterior.", ResultStatusCode.InternalServerError));
+                    return Result.Fail(AppErrorFactory.Internal("No se pudo eliminar la imagen anterior."));
                 }
 
                 businessImageRepository.Remove(ImageExists);

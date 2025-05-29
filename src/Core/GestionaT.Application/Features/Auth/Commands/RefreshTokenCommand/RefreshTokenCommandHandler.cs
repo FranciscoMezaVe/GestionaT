@@ -1,11 +1,8 @@
 ﻿using FluentResults;
-using GestionaT.Application.Common;
-using GestionaT.Application.Features.Auth.Commands.LoginCommand;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
-using GestionaT.Shared.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -35,14 +32,14 @@ namespace GestionaT.Application.Features.Auth.Commands.RefreshTokenCommand
             if (storedRefreshToken is null || !storedRefreshToken.IsValid())
             {
                 _logger.LogWarning("El refresh token {RefreshToken} no es valido", request.RefreshToken);
-                return Result.Fail(new HttpError("El refresh token no es valido.", ResultStatusCode.Unauthorized));
+                return Result.Fail(AppErrorFactory.Unauthorized("Refresh Token no valido"));
             }
 
             Guid userId = storedRefreshToken.UserId;
             if (!await _authentication.IsExistsUserByIdAsync(userId))
             {
                 _logger.LogWarning("El usuario {userId} no existe", userId);
-                return Result.Fail(new HttpError("El usuario no existe.", ResultStatusCode.Unauthorized));
+                return Result.Fail(AppErrorFactory.Unauthorized("El usuario no existe"));
             }
 
             _logger.LogWarning("El refresh token {RefreshToken} es valido", request.RefreshToken);

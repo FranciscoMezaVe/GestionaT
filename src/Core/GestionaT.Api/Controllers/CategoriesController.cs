@@ -1,7 +1,5 @@
-﻿using GestionaT.Application.Common;
-using GestionaT.Application.Features.Categories.Commands.CreateCategory;
+﻿using GestionaT.Application.Features.Categories.Commands.CreateCategory;
 using GestionaT.Application.Features.Categories.Queries.GetAllCategories;
-using GestionaT.Application.Features.Categories.Queries;
 using GestionaT.Infraestructure.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +9,8 @@ using GestionaT.Application.Features.Categories.Commands.DeleteCategory;
 using GestionaT.Application.Features.Categories.Queries.GetCategoryById;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Categories.Commands.UploadCategoryImage;
+using GestionaT.Application.Common.Errors;
+using GestionaT.Api.Common.Result;
 
 [Route("api/businesses/{businessId}/[controller]")]
 [Authorize]
@@ -19,16 +19,18 @@ using GestionaT.Application.Features.Categories.Commands.UploadCategoryImage;
 public class CategoriesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly HttpStatusCodeResolver _httpStatusCodeResolver;
     private readonly ILogger<CategoriesController> _logger;
 
-    public CategoriesController(IMediator mediator, ILogger<CategoriesController> logger)
+    public CategoriesController(IMediator mediator, ILogger<CategoriesController> logger, HttpStatusCodeResolver httpStatusCodeResolver)
     {
         _mediator = mediator;
         _logger = logger;
+        _httpStatusCodeResolver = httpStatusCodeResolver;
     }
 
     [HttpPost]
-    public async Task<ActionResult<Guid>> CreateCategory([FromBody] CreateCategoryCommandRequest request, Guid businessId)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommandRequest request, Guid businessId)
     {
         if (request == null)
         {
@@ -37,103 +39,42 @@ public class CategoriesController : ControllerBase
         }
 
         var result = await _mediator.Send(new CreateCategoryCommand(request, businessId));
-
-        if (!result.IsSuccess)
-        {
-            var httpError = result.Errors.OfType<HttpError>().First();
-            return StatusCode(httpError.StatusCode, new
-            {
-                Message = "Error al crear la categoría.",
-                Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-            });
-        }
-
-        return Ok(result.Value);
+        return result.ToActionResult(_httpStatusCodeResolver);
     }
 
     [HttpGet]
-    public async Task<ActionResult<PaginatedList<CategoryResponse>>> GetAllCategories(Guid businessId, [FromQuery] PaginationFilters filters)
+    public async Task<IActionResult> GetAllCategories(Guid businessId, [FromQuery] PaginationFilters filters)
     {
         var result = await _mediator.Send(new GetAllCategoriesQuery(businessId, filters));
-
-        if (!result.IsSuccess)
-        {
-            return StatusCode(500, new { Message = "Error al obtener las categorías.", result.Errors });
-        }
-
-        return Ok(result.Value);
+        return result.ToActionResult(_httpStatusCodeResolver);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<CategoryResponse>> GetCategoryById(Guid businessId, Guid id)
+    public async Task<IActionResult> GetCategoryById(Guid businessId, Guid id)
     {
         var result = await _mediator.Send(new GetCategoryByIdQuery(id));
-
-        if (!result.IsSuccess)
-        {
-            return StatusCode(500, new { Message = "Error al obtener las categorías.", result.Errors });
-        }
-
-        return Ok(result.Value);
+        return result.ToActionResult(_httpStatusCodeResolver);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid businessId, Guid id, [FromBody] UpdateCategoryCommandRequest request)
     {
         var result = await _mediator.Send(new UpdateCategoryCommand(request, id, businessId));
-
-        if (!result.IsSuccess)
-        {
-            var httpError = result.Errors.OfType<HttpError>().First();
-            return StatusCode(httpError.StatusCode, new
-            {
-                Message = "Error al actualizar la categoría.",
-                Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-            });
-        }
-
-        return NoContent();
+        return result.ToActionResult(_httpStatusCodeResolver);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid businessId, Guid id)
     {
         var result = await _mediator.Send(new DeleteCategoryCommand(id, businessId));
-
-        if (!result.IsSuccess)
-        {
-            var httpError = result.Errors.OfType<HttpError>().First();
-            return StatusCode(httpError.StatusCode, new
-            {
-                Message = "Error al eliminar la categoría.",
-                Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-            });
-        }
-
-        return NoContent();
+        return result.ToActionResult(_httpStatusCodeResolver);
     }
 
     [HttpPost("{categoryId}/images")]
     public async Task<IActionResult> UploadCategoryImage([FromForm] UploadCategoryImageCommandRequest request, [FromRoute] Guid categoryId, [FromRoute] Guid businessId)
     {
         var result = await _mediator.Send(new UploadCategoryImageCommand(request.Image, businessId, categoryId));
-
-        if (!result.IsSuccess)
-        {
-            var httpError = result.Errors.OfType<HttpError>().First();
-            _logger.LogInformation("Sucedio un error al subir la imagen.");
-            return StatusCode(httpError.StatusCode, new
-            {
-                Message = "Error al subir la imagen.",
-                Errors = result.Errors.Select(e => new
-                {
-                    e.Message,
-                    e.Reasons
-                })
-            });
-        }
-        _logger.LogInformation("imagen subida: {url}", result.Value);
-        return Ok(result.Value);
+        return result.ToActionResult(_httpStatusCodeResolver);
     }
 
 }

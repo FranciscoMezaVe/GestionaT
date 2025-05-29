@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -34,7 +33,7 @@ namespace GestionaT.Application.Features.Products.Queries.GetProductById
             if (product == null)
             {
                 _logger.LogWarning("Producto no encontrado con ID {Id} para el negocio {BusinessId}", query.Id, query.BusinessId);
-                return Result.Fail(new HttpError("Producto no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(query.Id), query.Id));
             }
 
             var response = _mapper.Map<ProductResponse>(product);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -31,7 +32,7 @@ namespace GestionaT.Application.Features.Roles.Queries.GetAllRolesQuery
             if (!roles.Any())
             {
                 _logger.LogWarning("No se encontraron roles.");
-                return Result.Fail(new HttpError("No se encontraron roles.", ResultStatusCode.NoContent));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(roles), request.businessId));
             }
 
             var response = roles.ToPagedList<Role, RolesResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);

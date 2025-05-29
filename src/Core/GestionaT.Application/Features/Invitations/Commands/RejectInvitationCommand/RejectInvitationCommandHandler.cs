@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -32,19 +33,19 @@ namespace GestionaT.Application.Features.Invitations.Commands.RejectInvitationCo
             var invitation = await _unitOfWork.Repository<Invitation>().GetByIdAsync(request.InvitationId);
             if (invitation == null)
             {
-                return Result.Fail(new HttpError("Invitación no encontrada.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.InvitationId), request.InvitationId));
             }
 
             // Validar que el usuario sea el invitado
             if (invitation.InvitedUserId != userId)
             {
-                return Result.Fail(new HttpError("No tienes permiso para rechazar esta invitación.", ResultStatusCode.Forbidden));
+                return Result.Fail(AppErrorFactory.Forbidden("No tienes permiso para invitar en este negocio."));
             }
 
             // Validar estado pendiente
             if (invitation.Status != InvitationStatus.Pending)
             {
-                return Result.Fail(new HttpError("La invitación no está pendiente.", ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.Conflict("La invitación no está pendiente."));
             }
 
             // Actualizar estado de invitación

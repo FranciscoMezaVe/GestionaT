@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -34,7 +35,7 @@ namespace GestionaT.Application.Features.Customers.Queries.GetCustomerById
             if (customer is null)
             {
                 _logger.LogWarning("No se encontró el cliente {CustomerId} en el negocio {BusinessId}", request.Id, request.BusinessId);
-                return Result.Fail(new HttpError("Cliente no encontrado", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.Id), request.Id));
             }
 
             var response = _mapper.Map<CustomerResponse>(customer);

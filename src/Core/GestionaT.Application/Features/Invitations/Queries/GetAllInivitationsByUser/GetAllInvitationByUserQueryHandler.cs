@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Invitations.Queries.GetAllInvitations;
 using GestionaT.Application.Interfaces.UnitOfWork;
@@ -49,7 +50,7 @@ namespace GestionaT.Application.Features.Invitations.Queries.GetAllInivitationsB
             if (!query.Any())
             {
                 _logger.LogInformation("No se econtraron invitaciones para el usuario {userId}", userId);
-                return Task.FromResult(Result.Fail<PaginatedList<InvitationResponse>>(new HttpError("No se encontraron invitaciones.", ResultStatusCode.NotFound)));
+                return Task.FromResult(Result.Fail<PaginatedList<InvitationResponse>>(AppErrorFactory.NotFound(nameof(userId), userId)));
             }
 
             var invitations = query.ToPagedList<Invitation, InvitationResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);

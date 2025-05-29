@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -33,7 +34,7 @@ namespace GestionaT.Application.Features.Customers.Commands.UpdateCustomer
             if (customer == null)
             {
                 _logger.LogWarning("No se encontró el cliente con ID {CustomerId}", command.Id);
-                return Result.Fail(new HttpError("Cliente no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Id), command.Id));
             }
 
             // Validar que el negocio exista
@@ -41,7 +42,7 @@ namespace GestionaT.Application.Features.Customers.Commands.UpdateCustomer
             if (business == null)
             {
                 _logger.LogWarning("Negocio no encontrado al actualizar cliente: {BusinessId}", command.BusinessId);
-                return Result.Fail(new HttpError("El negocio no existe.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.BusinessId), command.BusinessId));
             }
 
             // Mapear valores nuevos al entity existente

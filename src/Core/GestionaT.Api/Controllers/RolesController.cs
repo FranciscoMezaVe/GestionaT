@@ -1,6 +1,6 @@
-﻿using GestionaT.Application.Common;
+﻿using GestionaT.Api.Common.Result;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
-using GestionaT.Application.Features.Roles;
 using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
 using GestionaT.Application.Features.Roles.Commands.DeleteRoleCommand;
 using GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand;
@@ -21,15 +21,17 @@ namespace GestionaT.Api.Controllers
     {
         private readonly ILogger<RolesController> _logger;
         private readonly IMediator _mediator;
+        private readonly HttpStatusCodeResolver _httpStatusCodeResolver;
 
-        public RolesController(ILogger<RolesController> logger, IMediator mediator)
+        public RolesController(ILogger<RolesController> logger, IMediator mediator, HttpStatusCodeResolver httpStatusCodeResolver)
         {
             _logger = logger;
             _mediator = mediator;
+            _httpStatusCodeResolver = httpStatusCodeResolver;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateRoles([FromBody] CreateRolesCommand request, Guid businessId)
+        public async Task<IActionResult> CreateRoles([FromBody] CreateRolesCommand request, Guid businessId)
         {
             if (request == null)
             {
@@ -40,101 +42,35 @@ namespace GestionaT.Api.Controllers
             request.BusinessId = businessId;
 
             var result = await _mediator.Send(request);
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogInformation("Sucedio un error al crear el rol.");
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al crear el rol.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-            _logger.LogInformation("rol creado: {rol}", result.Value);
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<RolesResponse>>> GetAllRoles(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
+        public async Task<IActionResult> GetAllRoles(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
         {
             var result = await _mediator.Send(new GetAllRolesQuery(businessId, paginationFilters));
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogInformation("Sucedio un error al obtener los roles.");
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al obtener los roles.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet("{roleId}")]
-        public async Task<ActionResult<RolesResponse>> GetRoleById(Guid businessId, Guid roleId)
+        public async Task<IActionResult> GetRoleById(Guid businessId, Guid roleId)
         {
             var result = await _mediator.Send(new GetRoleByIdQuery(businessId, roleId));
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogInformation("Sucedió un error al obtener el rol con ID {RoleId}", roleId);
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al obtener el rol.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid businessId, Guid id, [FromBody] UpdateRoleCommandRequest request)
         {
             var result = await _mediator.Send(new UpdateRoleCommand(request, id, businessId));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al actualizar el rol.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            return NoContent();
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid businessId, Guid id)
         {
             var result = await _mediator.Send(new DeleteRoleCommand(id, businessId));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al eliminar el rol.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            return NoContent();
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
     }
 }

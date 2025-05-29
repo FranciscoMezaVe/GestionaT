@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -22,16 +23,16 @@ namespace GestionaT.Infraestructure.Images
         public async Task<Result<Product>> UploadProductImagesAsync(Guid productId, List<IFormFile> images, Guid businessId, Product product)
         {
             if (images == null || images.Count == 0)
-                return Result.Fail(new HttpError("Debes enviar al menos una imagen.", ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.BadRequest("Debes enviar al menos una imagen."));
 
             if (product == null)
-                return Result.Fail(new HttpError("Producto no encontrado.", ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(productId), productId));
 
             var existingCount = product.Images.Count;
             var totalAfterUpload = existingCount + images.Count;
 
             if (totalAfterUpload > 5)
-                return Result.Fail(new HttpError($"Este producto ya tiene {existingCount} imágenes. Solo puedes subir {5 - existingCount} más.", ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.BadRequest($"Este producto ya tiene {existingCount} imágenes. Solo puedes subir {5 - existingCount} más."));
 
             foreach (var image in images)
             {
@@ -77,7 +78,7 @@ namespace GestionaT.Infraestructure.Images
 
             var image = await imageRepo.GetByIdAsync(productImageId);
             if (image == null)
-                return Result.Fail(new HttpError("Imagen no encontrada.", ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(productImageId), productImageId));
 
             var deleteResult = await _imageStorageService.DeleteImageAsync(image.PublicId);
 

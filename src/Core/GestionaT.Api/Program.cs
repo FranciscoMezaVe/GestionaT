@@ -5,6 +5,7 @@ using GestionaT.Infraestructure;
 using GestionaT.Infraestructure.Seeds;
 using GestionaT.Persistence.PGSQL;
 using Microsoft.EntityFrameworkCore;
+using GestionaT.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseSerilogRequestLogging();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -32,7 +33,7 @@ namespace GestionaT.Application.Features.Customers.Commands.CreateCustomer
             if (business == null)
             {
                 _logger.LogWarning("Intento de crear cliente con negocio inexistente: {BusinessId}", command.BusinessId);
-                return Result.Fail(new HttpError("El negocio no existe.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.BusinessId), command.BusinessId));
             }
 
             var customer = _mapper.Map<Customer>(command.Request);

@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Invitations.Queries.GetAllInvitations;
 using GestionaT.Application.Interfaces.UnitOfWork;
@@ -54,7 +55,7 @@ namespace GestionaT.Application.Features.Sales.Queries.GetAllSales
                 _logger.LogWarning("No se encontraron ventas para el negocio {BusinessId}", request.BusinessId);
                 return Task.FromResult(
                     Result.Fail<PaginatedList<SalesResponse>>(
-                        new HttpError("No se encontraron ventas.", ResultStatusCode.NotFound)));
+                        AppErrorFactory.NotFound("Sales", request.BusinessId)));
             }
 
             var sales = query.ToPagedList<Sale, SalesResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);

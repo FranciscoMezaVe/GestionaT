@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -39,7 +40,7 @@ namespace GestionaT.Application.Features.Roles.Commands.CreateRolesCommand
                     return Result.Ok(existing.Id);
                 }
 
-                return Result.Fail(new HttpError("Ya existe un rol con ese nombre.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.AlreadyExists("Ya existe un rol con ese nombre."));
             }
 
             var role = _mapper.Map<Role>(request);

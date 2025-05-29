@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Features.Members.Commands.CreateMembersCommand;
 using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
 using GestionaT.Application.Interfaces.Repositories;
@@ -40,7 +40,8 @@ namespace GestionaT.Application.Features.Business.Commands.CreateBusinessCommand
             if (businessesUserId.Count >= 1)
             {
                 _logger.LogWarning("El usuario ya tiene un negocio creado");
-                return Result.Fail<Guid>(new HttpError("Un usuario no puede tener mas de un negocio propio", ResultStatusCode.UnprocesableContent));
+                await _unitOfWork.RollbackTransactionAsync();
+                return Result.Fail(AppErrorFactory.Conflict("Un usuario no puede tener mas de un negocio propio"));
             }
             //Quiza en futuro validar por el nombre
 

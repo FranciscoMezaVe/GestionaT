@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -31,7 +30,7 @@ namespace GestionaT.Application.Features.Categories.Commands.UpdateCategory
             if (category is null)
             {
                 _logger.LogWarning("Categoría no encontrada: ID {CategoryId}, Business {BusinessId}", command.Id, command.BusinessId);
-                return Result.Fail(new HttpError("Categoría no encontrada.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Id), command.Id));
             }
 
             _mapper.Map(command.Request, category);

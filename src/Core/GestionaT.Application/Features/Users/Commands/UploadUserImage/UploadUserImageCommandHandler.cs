@@ -7,6 +7,7 @@ using GestionaT.Shared.Abstractions;
 using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Common;
 using GestionaT.Domain.Enums;
+using GestionaT.Application.Common.Errors;
 
 namespace GestionaT.Application.Users.Commands.UploadUserImage
 {
@@ -39,7 +40,7 @@ namespace GestionaT.Application.Users.Commands.UploadUserImage
 
             var user = await _userRepository.GetByIdAsync(userId.Value);
             if (user is null)
-                return Result.Fail(new HttpError("Usuario no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(userId), userId.Value));
 
             var ImageExists = userImageRepository.Query()
                 .FirstOrDefault(img => img.UserId == userId.Value);
@@ -49,7 +50,7 @@ namespace GestionaT.Application.Users.Commands.UploadUserImage
                 var isDelete = await _imageStorageService.DeleteImageAsync(ImageExists.PublicId);
                 if (!isDelete)
                 {
-                    return Result.Fail(new HttpError("No se pudo eliminar la imagen anterior.", ResultStatusCode.InternalServerError));
+                    return Result.Fail(AppErrorFactory.Internal("No se pudo eliminar la imagen anterior."));
                 }
 
                 userImageRepository.Remove(ImageExists);

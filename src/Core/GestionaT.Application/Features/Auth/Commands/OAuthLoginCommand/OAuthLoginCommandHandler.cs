@@ -1,8 +1,7 @@
 ﻿using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Application.Interfaces.Repositories;
-using GestionaT.Domain.Enums;
 using GestionaT.Domain.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -36,27 +35,25 @@ namespace GestionaT.Application.Features.Auth.Commands.OAuthLoginCommand
 
             if (service is null)
             {
-                return Result.Fail(new HttpError("OAuth.ProviderNotSupported", ResultStatusCode.BadRequest).CausedBy($"El proveedor '{request.Provider}' no está soportado."));
+                return Result.Fail(AppErrorFactory.NotSupported(nameof(request.Provider), request.Provider));
             }
 
             var userInfo = await service.GetUserInfoAsync(request.AccessToken);
 
-            if(userInfo is null)
+            if (userInfo is null)
             {
                 _logger.LogWarning("No se pudo obtener la información del usuario para el proveedor {Provider}", request.Provider);
-                return Result.Fail(new HttpError("OAuth.UserInfoNotFound", ResultStatusCode.BadRequest).CausedBy($"No se pudo obtener la información del usuario para el proveedor '{request.Provider}'."));
+                return Result.Fail(AppErrorFactory.BadRequest($"No se pudo obtener la información del usuario para el proveedor '{request.Provider}'."));
             }
 
             if (string.IsNullOrEmpty(userInfo.Email))
             {
                 _logger.LogWarning("El proveedor {Provider} no devolvió un correo electrónico válido.", request.Provider);
-                return Result.Fail(new HttpError("OAuth.InvalidUserInfo", ResultStatusCode.BadRequest).CausedBy($"El proveedor '{request.Provider}' no devolvió un correo electrónico válido." +
-                    $" Active los permisos para poder registrar su cuenta con su correo"));
+                return Result.Fail(AppErrorFactory.BadRequest($"El proveedor '{request.Provider}' no devolvió un correo electrónico válido. Active los permisos para poder registrar su cuenta con su correo."));
             }
 
             var user = await _userRepository.GetByEmailAsync(userInfo.Email);
 
-            //si ya existe el usuario que inicie sesión directamente
             if (user is not null)
             {
                 return await Login(user.Id, userInfo);
@@ -67,7 +64,7 @@ namespace GestionaT.Application.Features.Auth.Commands.OAuthLoginCommand
             if (userResult.IsFailed)
             {
                 _logger.LogWarning("Error al registrar o actualizar el usuario: {Errors}", userResult.Errors);
-                return Result.Fail(new HttpError("OAuth.UserRegistrationFailed", ResultStatusCode.InternalServerError).CausedBy("Error al registrar el usuario."));
+                return Result.Fail(AppErrorFactory.Internal("Error al registrar el usuario."));
             }
 
             return await Login(userResult, userInfo);
@@ -83,6 +80,5 @@ namespace GestionaT.Application.Features.Auth.Commands.OAuthLoginCommand
 
             return new OAuthLoginCommandResponse(token, refreshToken);
         }
-
     }
 }

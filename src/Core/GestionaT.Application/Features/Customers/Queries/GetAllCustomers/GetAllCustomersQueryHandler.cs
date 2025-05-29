@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -35,7 +36,7 @@ namespace GestionaT.Application.Features.Customers.Queries.GetAllCustomers
             if(customers.Count() == 0)
             {
                 _logger.LogWarning("No se encontraron clientes para el negocio {BusinessId}", request.BusinessId);
-                return Result.Fail(new HttpError("No se encontraron clientes.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(customers), request.BusinessId));
             }
 
             var response = customers.ToPagedList<Customer, CustomerResponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);

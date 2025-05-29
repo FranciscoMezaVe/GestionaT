@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -31,7 +32,7 @@ namespace GestionaT.Application.Features.Roles.Commands.UpdateRoleCommand
             if (role == null)
             {
                 _logger.LogWarning("No se encontró el rol con ID {RoleId}.", command.Id);
-                return Result.Fail(new HttpError("Rol no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Id), command.Id));
             }
 
             _mapper.Map(command.Request, role);

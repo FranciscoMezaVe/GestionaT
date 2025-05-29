@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -31,7 +30,7 @@ namespace GestionaT.Application.Features.Business.Commands.UpdateBusinessCommand
             if (business is null)
             {
                 _logger.LogWarning("No se encontró el negocio con ID: {BusinessId}", request.BusinessId);
-                return Result.Fail(new HttpError("Negocio no encontrado", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.BusinessId), request.BusinessId));
             }
 
             // Mapear propiedades desde el DTO al entity (actualiza solo Name)

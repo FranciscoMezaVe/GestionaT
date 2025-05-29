@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Enums;
 using GestionaT.Shared.Abstractions;
@@ -32,7 +33,7 @@ namespace GestionaT.Application.Features.Members.Commands.DeleteMemberCommand
             if (business == null)
             {
                 _logger.LogWarning("Negocio no encontrado.");
-                return Result.Fail(new HttpError("Negocio no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.BusinessId), request.BusinessId));
             }
 
             var member = _unitOfWork.Repository<Domain.Entities.Members>()
@@ -43,7 +44,7 @@ namespace GestionaT.Application.Features.Members.Commands.DeleteMemberCommand
             if (member == null)
             {
                 _logger.LogWarning("Miembro no encontrado.");
-                return Result.Fail(new HttpError("Miembro no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.MemberId), request.MemberId));
             }
 
             var isOwner = business.OwnerId == currentUserId;
@@ -53,7 +54,7 @@ namespace GestionaT.Application.Features.Members.Commands.DeleteMemberCommand
             if (isOwner && isSelf)
             {
                 _logger.LogWarning("El owner no puede autoeliminarse.");
-                return Result.Fail(new HttpError("No puedes eliminar tu propio acceso si eres el dueño del negocio.", ResultStatusCode.Forbidden));
+                return Result.Fail(AppErrorFactory.Conflict("No puedes eliminar tu propio acceso si eres el dueño del negocio."));
             }
 
             // Si no soy el owner
@@ -62,7 +63,7 @@ namespace GestionaT.Application.Features.Members.Commands.DeleteMemberCommand
                 if (!isSelf)
                 {
                     _logger.LogWarning("Usuario {UserId} intentó eliminar a otro miembro sin ser owner.", currentUserId);
-                    return Result.Fail(new HttpError("No tienes permisos para eliminar a este miembro.", ResultStatusCode.Forbidden));
+                    return Result.Fail(AppErrorFactory.Forbidden("No tienes permisos para eliminar a este miembro."));
                 }
 
                 // Es self y no es owner → se permite

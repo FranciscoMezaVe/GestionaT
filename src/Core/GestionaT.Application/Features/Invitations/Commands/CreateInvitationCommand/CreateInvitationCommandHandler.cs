@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -41,20 +41,20 @@ namespace GestionaT.Application.Features.Invitations.Commands.CreateInvitation
             var business = await _unitOfWork.Repository<Domain.Entities.Business>().GetByIdAsync(request.BusinessId);
             if (business is null || business.OwnerId != ownerId)
             {
-                return Result.Fail<Guid>(new HttpError("No tienes permiso para invitar en este negocio.", ResultStatusCode.Forbidden));
+                return Result.Fail<Guid>(AppErrorFactory.Forbidden("No tienes permiso para invitar en este negocio."));
             }
 
             // Validar que el usuario invitado no sea el Owner del negocio
             if (request.Request.InvitedUserId == ownerId)
             {
-                return Result.Fail<Guid>(new HttpError("No puedes invitarte a ti mismo.", ResultStatusCode.BadRequest));
+                return Result.Fail<Guid>(AppErrorFactory.BadRequest("No puedes invitarte a ti mismo."));
             }
 
             // Validar que el usuario exista
             var invitedUser = await _userRepository.GetByIdAsync(request.Request.InvitedUserId);
             if (invitedUser is null)
             {
-                return Result.Fail<Guid>(new HttpError("El usuario invitado no existe.", ResultStatusCode.NotFound));
+                return Result.Fail<Guid>(AppErrorFactory.NotFound(nameof(request.Request.InvitedUserId), request.Request.InvitedUserId));
             }
 
             // Validar si ya hay una invitación pendiente
@@ -63,7 +63,7 @@ namespace GestionaT.Application.Features.Invitations.Commands.CreateInvitation
 
             if (existingInvitation)
             {
-                return Result.Fail<Guid>(new HttpError("Ya existe una invitación pendiente para este usuario.", ResultStatusCode.Conflict));
+                return Result.Fail<Guid>(AppErrorFactory.Conflict("Ya existe una invitación pendiente para este usuario."));
             }
 
             // Mapear y guardar

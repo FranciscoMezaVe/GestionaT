@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -28,19 +29,19 @@ namespace GestionaT.Application.Features.Roles.Commands.DeleteRoleCommand
             if (role == null)
             {
                 _logger.LogWarning("No se encontró el rol con ID {RoleId} para eliminación.", request.Id);
-                return Result.Fail(new HttpError("Rol no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.Id), request.Id));
             }
 
             if (role.Name == RolesValues.Owner)
             {
                 _logger.LogWarning("No se puede eliminar el rol de Owner.");
-                return Result.Fail(new HttpError("No se puede eliminar el rol de Owner.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("No se puede eliminar el rol de Owner."));
             }
 
             if(role.Name == RolesValues.Worker)
             {
                 _logger.LogWarning("No se puede eliminar el rol de Worker.");
-                return Result.Fail(new HttpError("No se puede eliminar el rol de Worker.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("No se puede eliminar el rol de Worker."));
             }
 
             var isAssigned = await _unitOfWork.Repository<Domain.Entities.Members>()
@@ -48,7 +49,7 @@ namespace GestionaT.Application.Features.Roles.Commands.DeleteRoleCommand
 
             if (isAssigned)
             {
-                return Result.Fail(new HttpError("No se puede eliminar el rol porque está asignado a usuarios.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("No se puede eliminar el rol porque está asignado a usuarios."));
             }
 
             // Soft delete

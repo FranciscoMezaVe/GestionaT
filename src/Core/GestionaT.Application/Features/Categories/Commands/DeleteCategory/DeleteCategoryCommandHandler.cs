@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -30,13 +31,13 @@ namespace GestionaT.Application.Features.Categories.Commands.DeleteCategory
             if (category is null)
             {
                 _logger.LogWarning("Categoría no encontrada: ID {CategoryId}, BusinessId {BusinessId}", command.Id, command.BusinessId);
-                return Result.Fail(new HttpError("Categoría no encontrada.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Id), command.Id));
             }
 
             if (category.Products.Any())
             {
                 _logger.LogWarning("La categoría {CategoryId} no puede ser eliminada porque tiene productos asignados.", category.Id);
-                return Result.Fail(new HttpError("No se puede eliminar la categoría porque tiene productos asignados.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("No se puede eliminar la categoría porque tiene productos asignados."));
             }
 
             repository.Remove(category);

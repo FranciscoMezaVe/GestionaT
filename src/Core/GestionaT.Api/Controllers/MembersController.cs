@@ -1,6 +1,6 @@
-﻿using GestionaT.Application.Common;
+﻿using GestionaT.Api.Common.Result;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
-using GestionaT.Application.Features.Members;
 using GestionaT.Application.Features.Members.Commands.DeleteMemberCommand;
 using GestionaT.Application.Features.Members.Commands.UpdateMemberRoleCommand;
 using GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness;
@@ -21,81 +21,36 @@ namespace GestionaT.Api.Controllers
     {
         private readonly ILogger<MembersController> _logger;
         private readonly IMediator _mediator;
+        private readonly HttpStatusCodeResolver _httpStatusCodeResolver;
         private readonly ICurrentUserService _currentUserService;
 
-        public MembersController(ILogger<MembersController> logger, IMediator mediator, ICurrentUserService currentUserService)
+        public MembersController(ILogger<MembersController> logger, IMediator mediator, ICurrentUserService currentUserService, HttpStatusCodeResolver httpStatusCodeResolver)
         {
             _logger = logger;
             _mediator = mediator;
             _currentUserService = currentUserService;
+            _httpStatusCodeResolver = httpStatusCodeResolver;
         }
 
         [HttpDelete("{memberId}")]
         public async Task<IActionResult> DeleteMember(Guid memberId, Guid businessId)
         {
             var result = await _mediator.Send(new DeleteMemberCommand(memberId, businessId));
-
-            if (!result.IsSuccess)
-            {
-                var error = result.Errors.OfType<HttpError>().FirstOrDefault();
-                _logger.LogInformation("Error al desactivar el miembro.");
-                return StatusCode(error?.StatusCode ?? 422, new
-                {
-                    Message = "Error al desactivar el miembro.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-
-            _logger.LogInformation("Miembro desactivado correctamente.");
-            return NoContent();
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<MembersResponse>>> GetAllMembersByBusiness(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
+        public async Task<IActionResult> GetAllMembersByBusiness(Guid businessId, [FromQuery] PaginationFilters paginationFilters)
         {
             var result = await _mediator.Send(new GetAllMembersByBusinessQuery(businessId, paginationFilters));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().FirstOrDefault();
-                return StatusCode(httpError?.StatusCode ?? 422, new
-                {
-                    Message = "Error al obtener los miembros.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet("{memberId}")]
-        public async Task<ActionResult<MembersResponse>> GetMemberById(Guid businessId, Guid memberId)
+        public async Task<IActionResult> GetMemberById(Guid businessId, Guid memberId)
         {
             var result = await _mediator.Send(new GetMemberByIdQuery(businessId, memberId));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().FirstOrDefault();
-                return StatusCode(httpError?.StatusCode ?? 422, new
-                {
-                    Message = "Error al consultar el miembro.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpPatch("{memberId}/role")]
@@ -108,19 +63,7 @@ namespace GestionaT.Api.Controllers
             }
 
             var result = await _mediator.Send(new UpdateMemberRoleCommand(businessId, memberId, request));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().FirstOrDefault();
-                return StatusCode(httpError?.StatusCode ?? 422, new
-                {
-                    Message = "Error al actualizar el rol del miembro.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            _logger.LogInformation("Rol del miembro {MemberId} actualizado exitosamente.", memberId);
-            return NoContent();
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
     }
 }

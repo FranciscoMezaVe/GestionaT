@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -42,7 +43,7 @@ namespace GestionaT.Application.Features.Products.Commands.CreateProduct
             {
                 _logger.LogWarning("Categoría no válida. Id: {CategoryId}, BusinessId: {BusinessId}", command.Request.CategoryId, command.BusinessId);
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError("La categoría especificada no es válida o está eliminada.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Request.CategoryId), command.Request.CategoryId));
             }
 
             var existing = productRepo.QueryIncludingDeleted()
@@ -69,7 +70,7 @@ namespace GestionaT.Application.Features.Products.Commands.CreateProduct
 
                 _logger.LogWarning("Producto duplicado: {ProductName}", existing.Name);
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError("Ya existe un producto con ese nombre.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("Ya existe un producto con ese nombre."));
             }
 
             var product = _mapper.Map<Product>(command.Request);
@@ -81,7 +82,7 @@ namespace GestionaT.Application.Features.Products.Commands.CreateProduct
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 var combinedMessages = string.Join(Environment.NewLine, imageResult.Errors.Select(e => e.Message));
-                return Result.Fail(new HttpError(combinedMessages));
+                return Result.Fail(AppErrorFactory.Internal(combinedMessages ?? "No se pudo subir la imagen"));
             }
 
             await productRepo.AddAsync(product);

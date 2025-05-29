@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Features.Members.Commands.CreateMembersCommand;
 using GestionaT.Application.Features.Roles.Commands.CreateRolesCommand;
 using GestionaT.Application.Interfaces.UnitOfWork;
@@ -40,21 +41,21 @@ namespace GestionaT.Application.Features.Invitations.Commands.AcceptInvitationCo
             if (invitation == null)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError("Invitación no encontrada.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.InvitationId), request.InvitationId));
             }
 
             // Validar que el usuario sea el invitado
             if (invitation.InvitedUserId != userId)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError("No tienes permiso para aceptar esta invitación.", ResultStatusCode.Forbidden));
+                return Result.Fail(AppErrorFactory.Forbidden("No tienes permiso para aceptar esta invitación."));
             }
 
             // Validar estado pendiente
             if (invitation.Status != InvitationStatus.Pending)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError("La invitación no está pendiente.", ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.Conflict("La invitación no está pendiente."));
             }
 
             // Actualizar estado de invitación
@@ -73,8 +74,7 @@ namespace GestionaT.Application.Features.Invitations.Commands.AcceptInvitationCo
                 if (roleResult.IsFailed)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
-                    var httpError = roleResult.Errors.OfType<HttpError>().FirstOrDefault();
-                    return Result.Fail(new HttpError(httpError?.Message ?? "Error al aceptar la invitación.", httpError?.StatusCode ?? ResultStatusCode.UnprocesableContent));
+                    return Result.Fail(AppErrorFactory.Internal(roleResult.Errors.ToString() ?? "Error al aceptar la invitación."));
                 }
 
                 roleId = roleResult.Value;
@@ -87,8 +87,7 @@ namespace GestionaT.Application.Features.Invitations.Commands.AcceptInvitationCo
             if (memberResult.IsFailed)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                var httpError = memberResult.Errors.OfType<HttpError>().FirstOrDefault();
-                return Result.Fail(new HttpError(httpError?.Message ?? "Error al aceptar la invitación.", httpError?.StatusCode ?? ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.Internal(memberResult.Errors.ToString() ?? "Error al aceptar la invitación."));
             }
 
             await _unitOfWork.SaveChangesAsync();

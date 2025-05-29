@@ -1,7 +1,6 @@
 ﻿using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Auth;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +22,7 @@ namespace GestionaT.Application.Features.Auth.Commands.LoginCommand
             if (!await _authentication.Authenticate(request.Email, request.Password))
             {
                 _logger.LogWarning("Inicio de sesion invalido para el usuario {Email}", request.Email);
-                return Result.Fail(new HttpError("Credenciales invalidas.", ResultStatusCode.Unauthorized));
+                return Result.Fail(AppErrorFactory.Unauthorized("Credenciales invalidas"));
             }
             Guid userId = await _authentication.GetUserIdAsync(request.Email);
             var userRoles = await _authentication.GetUserRolesAsync(userId);

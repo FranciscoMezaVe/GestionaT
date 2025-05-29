@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +33,7 @@ namespace GestionaT.Application.Features.Products.Queries.GetAllProducts
             {
                 //logging
                 _logger.LogWarning("No se encontraron productos, negocio {negocio}", request.BusinessId);
-                return Result.Fail(new HttpError($"No se encontraron productos", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(products), request.BusinessId));
             }
 
             var response = products.ToPagedList<Product, ProductResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);

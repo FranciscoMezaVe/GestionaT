@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Enums;
 using GestionaT.Shared.Abstractions;
@@ -36,7 +37,7 @@ namespace GestionaT.Application.Features.Members.Queries.GetMemberById
             if (business == null || business.OwnerId != userId)
             {
                 _logger.LogWarning("Usuario {UserId} intentó acceder al miembro {MemberId} sin permisos.", userId, request.MemberId);
-                return Result.Fail(new HttpError("No tienes permiso para ver este miembro.", ResultStatusCode.Forbidden));
+                return Result.Fail(AppErrorFactory.Forbidden("No tienes permiso para ver este miembro."));
             }
 
             var member = _unitOfWork.Repository<Domain.Entities.Members>()
@@ -46,7 +47,7 @@ namespace GestionaT.Application.Features.Members.Queries.GetMemberById
 
             if (member == null)
             {
-                return Result.Fail(new HttpError("Miembro no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.MemberId), request.MemberId));
             }
 
             var response = _mapper.Map<MembersResponse>(member);

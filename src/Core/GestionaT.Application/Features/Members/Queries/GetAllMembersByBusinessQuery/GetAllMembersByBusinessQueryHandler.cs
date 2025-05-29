@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Enums;
@@ -39,7 +40,7 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
             if (business == null || business.OwnerId != userId)
             {
                 _logger.LogWarning("Usuario {UserId} intentó acceder a miembros del negocio {BusinessId} sin permisos.", userId, request.BusinessId);
-                return Result.Fail(new HttpError("No tienes permiso para ver los miembros de este negocio.", ResultStatusCode.Forbidden));
+                return Result.Fail(AppErrorFactory.Forbidden("No tienes permiso para ver los miembros de este negocio."));
             }
 
             // Traer miembros con Role incluido
@@ -50,7 +51,7 @@ namespace GestionaT.Application.Features.Members.Queries.GetAllMembersByBusiness
             if (!activeMembers.Any())
             {
                 _logger.LogInformation("No se encontraron miembros activos para el negocio {BusinessId}.", request.BusinessId);
-                return Result.Fail(new HttpError("No se encontraron miembros activos.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.Conflict("No se encontraron miembros activos."));
             }
 
             var response = activeMembers.ToPagedList<Domain.Entities.Members, MembersResponse>(_mapper, request.PaginationFilters.PageIndex, request.PaginationFilters.PageSize);

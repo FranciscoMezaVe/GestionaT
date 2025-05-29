@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Enums;
 using MediatR;
@@ -33,7 +34,7 @@ namespace GestionaT.Application.Features.Members.Commands.CreateMembersCommand
                 if (memberExists.Active == Status.Active)
                 {
                     _logger.LogWarning("El usuario ya es miembro activo del negocio");
-                    return Result.Fail<Guid>(new HttpError("El usuario ya es miembro del negocio", ResultStatusCode.UnprocesableContent));
+                    return Result.Fail(AppErrorFactory.Conflict("El usuario ya es miembro del negocio"));
                 }
 
                 _logger.LogInformation("Reactivando miembro inactivo");

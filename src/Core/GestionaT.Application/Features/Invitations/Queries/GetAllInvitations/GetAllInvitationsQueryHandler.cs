@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Invitations.Queries.GetAllInvitations;
 using GestionaT.Application.Interfaces.UnitOfWork;
@@ -40,7 +41,7 @@ public class GetAllInvitationsQueryHandler : IRequestHandler<GetAllInvitationsQu
         if (!invitations.Any())
         {
             _logger.LogInformation("No se econtraron invitaciones, negocio: {businessId}", request.businessId);
-            return Task.FromResult(Result.Fail<PaginatedList<InvitationResponse>>(new HttpError("No se encontraron invitaciones.", ResultStatusCode.NotFound)));
+            return Task.FromResult(Result.Fail<PaginatedList<InvitationResponse>>(AppErrorFactory.NotFound(nameof(invitations), request.businessId)));
         }
 
         var response = invitations.ToPagedList<Invitation, InvitationResponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);

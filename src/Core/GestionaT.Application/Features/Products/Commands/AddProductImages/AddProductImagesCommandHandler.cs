@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -36,7 +37,7 @@ namespace GestionaT.Application.Features.Products.Commands.AddProductImages
             if (product is null)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError("Producto no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.ProductId), command.ProductId));
             }
 
             var currentImagesCount = product.Images?.Count ?? 0;
@@ -52,7 +53,7 @@ namespace GestionaT.Application.Features.Products.Commands.AddProductImages
             {
                 var errorMessages = string.Join(" | ", result.Errors.Select(e => e.Message));
                 await _unitOfWork.RollbackTransactionAsync();
-                return Result.Fail(new HttpError(errorMessages, ResultStatusCode.UnprocesableContent));
+                return Result.Fail(AppErrorFactory.Internal(errorMessages ?? "No se pudo subir la imagen"));
             }
 
             await _unitOfWork.CommitTransactionAsync();

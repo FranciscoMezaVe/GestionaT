@@ -1,5 +1,4 @@
-﻿using GestionaT.Application.Common;
-using GestionaT.Application.Features.Customers.Commands.CreateCustomer;
+﻿using GestionaT.Application.Features.Customers.Commands.CreateCustomer;
 using GestionaT.Application.Features.Customers.Commands.UpdateCustomer;
 using GestionaT.Application.Features.Customers.Commands.DeleteCustomer;
 using GestionaT.Application.Features.Customers.Queries.GetAllCustomers;
@@ -8,8 +7,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using GestionaT.Infraestructure.Authorization;
-using GestionaT.Application.Features.Customers;
 using GestionaT.Application.Common.Pagination;
+using GestionaT.Application.Common.Errors;
+using GestionaT.Api.Common.Result;
 
 namespace GestionaT.Api.Controllers
 {
@@ -20,16 +20,18 @@ namespace GestionaT.Api.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly HttpStatusCodeResolver _httpStatusCodeResolver;
         private readonly ILogger<CustomersController> _logger;
 
-        public CustomersController(IMediator mediator, ILogger<CustomersController> logger)
+        public CustomersController(IMediator mediator, ILogger<CustomersController> logger, HttpStatusCodeResolver httpStatusCodeResolver)
         {
             _mediator = mediator;
             _logger = logger;
+            _httpStatusCodeResolver = httpStatusCodeResolver;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateCustomerCommandRequest request, Guid businessId)
+        public async Task<IActionResult> Create([FromBody] CreateCustomerCommandRequest request, Guid businessId)
         {
             if (request == null)
             {
@@ -38,18 +40,7 @@ namespace GestionaT.Api.Controllers
             }
 
             var result = await _mediator.Send(new CreateCustomerCommand(request, businessId));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al crear el cliente.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpPut("{id:guid}")]
@@ -62,76 +53,28 @@ namespace GestionaT.Api.Controllers
             }
 
             var result = await _mediator.Send(new UpdateCustomerCommand(request, id, businessId));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogWarning("Error al actualizar el cliente {CustomerId}: {Error}", id, httpError.Message);
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al actualizar el cliente.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            _logger.LogInformation("Cliente actualizado exitosamente: {CustomerId}", id);
-            return NoContent();
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerResponse>>> GetAll(Guid businessId, [FromQuery] PaginationFilters filters)
+        public async Task<IActionResult> GetAll(Guid businessId, [FromQuery] PaginationFilters filters)
         {
             var result = await _mediator.Send(new GetAllCustomersQuery(businessId, filters));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogWarning("Error al obtener clientes: {Error}", httpError.Message);
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al obtener los clientes.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<CustomerResponse>> GetById(Guid businessId, Guid id)
+        public async Task<IActionResult> GetById(Guid businessId, Guid id)
         {
             var result = await _mediator.Send(new GetCustomerByIdQuery(businessId, id));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogWarning("Error al obtener el cliente con ID {Id}: {Error}", id, httpError.Message);
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al obtener el cliente.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid businessId, Guid id)
         {
             var result = await _mediator.Send(new DeleteCustomerCommand(id, businessId));
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al eliminar el cliente.",
-                    Errors = result.Errors.Select(e => new { e.Message, e.Reasons })
-                });
-            }
-
-            return NoContent();
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
     }
 }

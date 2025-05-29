@@ -1,4 +1,5 @@
-﻿using GestionaT.Application.Common;
+﻿using GestionaT.Api.Common.Result;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Features.Users.Queries.GetUserImage;
 using GestionaT.Application.Users.Commands.UploadUserImage;
 using MediatR;
@@ -15,11 +16,13 @@ namespace GestionaT.Api.Controllers
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IMediator _mediator;
+        private readonly HttpStatusCodeResolver _httpStatusCodeResolver;
 
-        public UsersController(ILogger<UsersController> logger, IMediator mediator)
+        public UsersController(ILogger<UsersController> logger, IMediator mediator, HttpStatusCodeResolver httpStatusCodeResolver)
         {
             _logger = logger;
             _mediator = mediator;
+            _httpStatusCodeResolver = httpStatusCodeResolver;
         }
 
         [HttpPost("images")]
@@ -33,23 +36,7 @@ namespace GestionaT.Api.Controllers
             }
 
             var result = await _mediator.Send(command);
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogInformation("Sucedio un error al subir la imagen.");
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al subir la imagen.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-            _logger.LogInformation("imagen subida: {url}", result.Value);
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
 
         [HttpGet("images")]
@@ -57,29 +44,7 @@ namespace GestionaT.Api.Controllers
         public async Task<IActionResult> GetProfileImage()
         {
             var result = await _mediator.Send(new GetUserImageQuery());
-
-            if (!result.IsSuccess)
-            {
-                var httpError = result.Errors.OfType<HttpError>().First();
-                _logger.LogInformation("Sucedio un error al consultar la imagen.");
-                return StatusCode(httpError.StatusCode, new
-                {
-                    Message = "Error al consultar la imagen.",
-                    Errors = result.Errors.Select(e => new
-                    {
-                        e.Message,
-                        e.Reasons
-                    })
-                });
-            }
-
-            if (string.IsNullOrWhiteSpace(result.Value))
-            {
-                return NoContent();
-            }
-
-            _logger.LogInformation("imagen consultada: {url}", result.Value);
-            return Ok(result.Value);
+            return result.ToActionResult(_httpStatusCodeResolver);
         }
     }
 }

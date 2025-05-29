@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -31,13 +32,13 @@ namespace GestionaT.Application.Features.Products.Commands.DeleteProduct
             if (product == null)
             {
                 _logger.LogWarning("Producto no encontrado con ID {ProductId}", command.Id);
-                return Result.Fail(new HttpError("Producto no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Id), command.Id));
             }
 
             if (product.IsDeleted)
             {
                 _logger.LogWarning("Producto ya está eliminado con ID {ProductId}", command.Id);
-                return Result.Fail(new HttpError("El producto ya está eliminado.", ResultStatusCode.BadRequest));
+                return Result.Fail(AppErrorFactory.Conflict("El producto ya está eliminado."));
             }
 
             // Soft delete

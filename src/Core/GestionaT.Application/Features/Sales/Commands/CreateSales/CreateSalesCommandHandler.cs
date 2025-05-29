@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Application.Profiles;
 using GestionaT.Domain.Entities;
@@ -28,7 +29,7 @@ namespace GestionaT.Application.Features.Sales.Commands.CreateSales
             if(!customerIsExists)
             {
                 _logger.LogWarning("Cliente con ID {command.Request.CustomerId} no existe.", command.Request.CustomerId);
-                return Result.Fail(new HttpError($"Cliente con ID {command.Request.CustomerId} no existe.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Request.CustomerId), command.Request.CustomerId));
             }
 
             var productsIds = command.Request.Products.Select(p => p.Id).ToList();
@@ -38,7 +39,7 @@ namespace GestionaT.Application.Features.Sales.Commands.CreateSales
             if (!productsIsExists)
             {
                 _logger.LogWarning("Productos con IDs {command.Request.ProductsIds} no existen.", string.Join(", ", productsIds));
-                return Result.Fail(new HttpError($"Productos con IDs {string.Join(", ", productsIds)} no existen.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(productsIds), $"Productos con IDs {string.Join(", ", productsIds)} no existen."));
             }
 
             var sale = command.MapToSaleEntity();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Repositories;
 using GestionaT.Domain.Enums;
 using MediatR;
@@ -29,7 +30,7 @@ namespace GestionaT.Application.Features.Business.Queries.GetBusinessByIdQuery
             if (business is null)
             {
                 _logger.LogWarning("No se encontro el negocio con id: {BusinessId}", request.BusinessId);
-                return Task.FromResult(Result.Fail<BusinessReponse>(new HttpError("No se encontro el negocio", ResultStatusCode.NoContent)));
+                return Task.FromResult(Result.Fail<BusinessReponse>(AppErrorFactory.NotFound(nameof(request.BusinessId), request.BusinessId)));
             }
 
             var response = _mapper.Map<BusinessReponse>(business);

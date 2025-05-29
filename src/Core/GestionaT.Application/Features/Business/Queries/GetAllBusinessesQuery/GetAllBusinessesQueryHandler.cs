@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Categories.Commands.CreateCategory;
 using GestionaT.Application.Interfaces.Repositories;
@@ -30,7 +31,7 @@ namespace GestionaT.Application.Features.Business.Queries.GetAllBusinessesQuery
             if (businesses.Count == 0)
             {
                 _logger.LogWarning("No se encontraron negocios");
-                return Result.Fail(new HttpError("No se encontraron negocios", ResultStatusCode.NoContent));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(businesses), request.UserId));
             }
 
             var response = businesses.ToPagedList<Domain.Entities.Business, BusinessReponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);

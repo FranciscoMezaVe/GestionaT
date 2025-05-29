@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Images;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -32,7 +33,7 @@ namespace GestionaT.Application.Features.Categories.Commands.UploadCategoryImage
 
             var category = await categoryRepository.GetByIdAsync(request.CategoryId);
             if (category is null)
-                return Result.Fail(new HttpError("Categoria no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.CategoryId), request.CategoryId));
 
             var ImageExists = categoryImageRepository.Query()
                 .FirstOrDefault(img => img.CategoryId == request.CategoryId);
@@ -42,7 +43,7 @@ namespace GestionaT.Application.Features.Categories.Commands.UploadCategoryImage
                 var isDelete = await _imageStorageService.DeleteImageAsync(ImageExists.PublicId);
                 if (!isDelete)
                 {
-                    return Result.Fail(new HttpError("No se pudo eliminar la imagen anterior.", ResultStatusCode.InternalServerError));
+                    return Result.Fail(AppErrorFactory.Internal("No se pudo eliminar la imagen anterior."));
                 }
 
                 categoryImageRepository.Remove(ImageExists);

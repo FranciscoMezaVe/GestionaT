@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -32,7 +33,7 @@ namespace GestionaT.Application.Features.Members.Commands.UpdateMemberRoleComman
             var business = await _unitOfWork.Repository<Domain.Entities.Business>().GetByIdAsync(request.BusinessId);
             if (business == null)
             {
-                return Result.Fail(new HttpError("Negocio no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.BusinessId), request.BusinessId));
             }
 
             //var isOwner = business.OwnerId == currentUserId;
@@ -47,17 +48,17 @@ namespace GestionaT.Application.Features.Members.Commands.UpdateMemberRoleComman
 
             if (member == null)
             {
-                return Result.Fail(new HttpError("Miembro no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.MemberId), request.MemberId));
             }
 
             if (member.Active != Status.Active)
             {
-                return Result.Fail(new HttpError("No se puede cambiar el rol de un miembro inactivo.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("No se puede cambiar el rol de un miembro inactivo."));
             }
 
             if (member.UserId == currentUserId)
             {
-                return Result.Fail(new HttpError("No puedes cambiar tu propio rol si eres el owner.", ResultStatusCode.Forbidden));
+                return Result.Fail(AppErrorFactory.Conflict("No puedes cambiar tu propio rol si eres el owner."));
             }
 
             var role = _unitOfWork.Repository<Role>()
@@ -66,12 +67,12 @@ namespace GestionaT.Application.Features.Members.Commands.UpdateMemberRoleComman
 
             if (role == null)
             {
-                return Result.Fail(new HttpError("El rol especificado no existe o no pertenece al negocio.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.Conflict("El rol especificado no existe o no pertenece al negocio."));
             }
 
             if (role.Name == RolesValues.Owner)
             {
-                return Result.Fail(new HttpError("No puedes asignar el rol de Owner a un miembro.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("No puedes asignar el rol de Owner a un miembro."));
             }
 
             member.RoleId = request.RoleDto.RoleId;

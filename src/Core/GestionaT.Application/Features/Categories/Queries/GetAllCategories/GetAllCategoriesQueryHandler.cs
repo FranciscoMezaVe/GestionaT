@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Common.Pagination;
 using GestionaT.Application.Features.Categories.Queries;
 using GestionaT.Application.Interfaces.UnitOfWork;
@@ -34,7 +35,7 @@ namespace GestionaT.Application.Features.Categories.Queries.GetAllCategories
             {
                 //logger
                 _logger.LogWarning("No se encontraron categorías para el negocio {BusinessId}.", request.BusinessId);
-                return Task.FromResult(Result.Fail<PaginatedList<CategoryResponse>>(new HttpError("No se encontraron categorías para el negocio especificado.", ResultStatusCode.NotFound)));
+                return Task.FromResult(Result.Fail<PaginatedList<CategoryResponse>>(AppErrorFactory.NotFound(nameof(categories), request.BusinessId)));
             }
 
             var response = categories.ToPagedList<Category, CategoryResponse>(_mapper, request.Filters.PageIndex, request.Filters.PageSize);

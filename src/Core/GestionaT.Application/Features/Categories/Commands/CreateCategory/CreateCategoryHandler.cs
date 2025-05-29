@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using FluentResults;
-using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
-using GestionaT.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -28,7 +27,7 @@ namespace GestionaT.Application.Features.Categories.Commands.CreateCategory
             if (string.IsNullOrWhiteSpace(name))
             {
                 _logger.LogWarning("Nombre de categoría vacío o nulo.");
-                return Result.Fail(new HttpError("El nombre de la categoría es obligatorio.", ResultStatusCode.BadRequest));
+                return Result.Fail(AppErrorFactory.BadRequest("El nombre de la categoría es obligatorio."));
             }
 
             var existing = _unitOfWork.Repository<Category>()
@@ -47,7 +46,7 @@ namespace GestionaT.Application.Features.Categories.Commands.CreateCategory
                 }
 
                 _logger.LogWarning("Ya existe una categoría activa con el nombre '{CategoryName}' en el negocio {BusinessId}.", name, command.BusinessId);
-                return Result.Fail(new HttpError("Ya existe una categoría con ese nombre.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.Conflict("Ya existe una categoría con ese nombre."));
             }
 
             var category = _mapper.Map<Category>(command.Request);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using GestionaT.Application.Common;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
 using GestionaT.Domain.Enums;
@@ -33,7 +34,7 @@ namespace GestionaT.Application.Features.Products.Commands.UpdateProduct
             if (product is null)
             {
                 _logger.LogWarning("Producto no encontrado: {ProductId}", command.ProductId);
-                return Result.Fail(new HttpError("Producto no encontrado.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.ProductId), command.ProductId));
             }
 
             var category = categoryRepo.Query()
@@ -45,7 +46,7 @@ namespace GestionaT.Application.Features.Products.Commands.UpdateProduct
             if (category is null)
             {
                 _logger.LogWarning("Categoría no válida: {CategoryId}", command.Request.CategoryId);
-                return Result.Fail(new HttpError("La categoría especificada no es válida o está eliminada.", ResultStatusCode.NotFound));
+                return Result.Fail(AppErrorFactory.NotFound(nameof(command.Request.CategoryId), command.Request.CategoryId));
             }
 
             var exists = productRepo.Query()
@@ -58,7 +59,7 @@ namespace GestionaT.Application.Features.Products.Commands.UpdateProduct
             if (exists)
             {
                 _logger.LogWarning("Ya existe otro producto con el nombre: {Name}", command.Request.Name);
-                return Result.Fail(new HttpError("Ya existe otro producto con ese nombre.", ResultStatusCode.Conflict));
+                return Result.Fail(AppErrorFactory.AlreadyExists("Ya existe otro producto con ese nombre."));
             }
 
             _mapper.Map(command.Request, product);
