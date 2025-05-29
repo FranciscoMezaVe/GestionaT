@@ -10,6 +10,9 @@ namespace GestionaT.Application.Common.Errors
         public static Error AlreadyExists(string entity, string? detail = null) =>
             Create(ErrorCodes.AlreadyExists, $"{entity} ya existe.", detail);
 
+        public static Error AlreadyOAuthExists(string entity, string provider, string? detail = null) =>
+            Create(ErrorCodes.AlreadyOAuthExists, $"{entity} ya existe con el proveedor {provider}.", detail);
+
         public static Error Validation(string field, string message) =>
             Create(ErrorCodes.Validation, message, null, field);
 
@@ -36,15 +39,18 @@ namespace GestionaT.Application.Common.Errors
         public static Error BadRequest(string message, string? detail = null) =>
             Create(ErrorCodes.BadRequest, message, detail);
 
+        public static Error NotLinked(string provider, string? detail = null) =>
+            Create(ErrorCodes.NotLinked, $"La cuenta no esta vinculada al proveedor {provider}", detail);
+
         private static Error Create(string code, string message, string? detail = null, string? field = null)
         {
-            var error = new Error(message).WithMetadata("ErrorCode", code);
+            var error = new Error(message).WithMetadata(MetaDataErrorValues.Code, code);
 
             if (!string.IsNullOrEmpty(detail))
-                error.WithMetadata("Detail", detail);
+                error.WithMetadata(MetaDataErrorValues.Detail, detail);
 
             if (!string.IsNullOrEmpty(field))
-                error.WithMetadata("Field", field);
+                error.WithMetadata(MetaDataErrorValues.Field, field);
 
             return error;
         }

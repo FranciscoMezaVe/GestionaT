@@ -15,6 +15,12 @@ namespace GestionaT.Application.Common.Errors
         public int GetStatusCode() => StatusCodes.Status409Conflict;
     }
 
+    public class AlreadyOAuthExistsStatusStrategy : IHttpStatusCodeStrategy
+    {
+        public bool CanHandle(string errorCode) => errorCode == ErrorCodes.AlreadyOAuthExists;
+        public int GetStatusCode() => StatusCodes.Status409Conflict;
+    }
+
     public class ValidationStatusStrategy : IHttpStatusCodeStrategy
     {
         public bool CanHandle(string errorCode) => errorCode == ErrorCodes.Validation;
@@ -55,5 +61,11 @@ namespace GestionaT.Application.Common.Errors
     {
         public bool CanHandle(string errorCode) => errorCode == ErrorCodes.BadRequest;
         public int GetStatusCode() => StatusCodes.Status400BadRequest;
+    }
+
+    public class NotLinkedStatusStrategy : IHttpStatusCodeStrategy
+    {
+        public bool CanHandle(string errorCode) => errorCode == ErrorCodes.NotLinked;
+        public int GetStatusCode() => StatusCodes.Status409Conflict;
     }
 }

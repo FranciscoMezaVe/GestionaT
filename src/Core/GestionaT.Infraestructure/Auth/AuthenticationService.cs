@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Domain.Entities;
@@ -121,8 +122,8 @@ namespace GestionaT.Infraestructure.Auth
 
             if (!result.Succeeded)
             {
-                var errors = result.Errors.Select(e => new Error(e.Code).CausedBy(e.Description));
-                return Result.Fail<Guid>(errors);
+                var errors = string.Join("|", result.Errors.Select(e => new Error(e.Code).CausedBy(e.Description)));
+                return Result.Fail<Guid>(AppErrorFactory.Internal(errors));
             }
 
             return Result.Ok(user.Id);

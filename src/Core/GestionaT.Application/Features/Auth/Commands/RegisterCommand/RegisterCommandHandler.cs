@@ -41,7 +41,7 @@ namespace GestionaT.Application.Features.Auth.Commands.RegisterCommand
                 if (providerUser is not null)
                 {
                     _logger.LogWarning("El usuario {Email} ya está registrado con el proveedor {Provider}.", command.request.Email, providerUser.ExternalProvider);
-                    return Result.Fail(AppErrorFactory.AlreadyExists(nameof(command.request.Email), $"El usuario ya está registrado con el proveedor '{providerUser.ExternalProvider}'."));
+                    return Result.Fail(AppErrorFactory.AlreadyOAuthExists(nameof(command.request.Email), providerUser.ExternalProvider!, $"El usuario ya está registrado con el proveedor '{providerUser.ExternalProvider}'."));
                 }
 
                 _logger.LogWarning("El usuario {Email} ya existe pero no está vinculado a un proveedor OAuth.", command.request.Email);
@@ -56,7 +56,7 @@ namespace GestionaT.Application.Features.Auth.Commands.RegisterCommand
                     command.request.Email,
                     string.Join(", ", result.Errors.Select(e => e.Message)));
 
-                return result;
+                return Result.Fail(AppErrorFactory.Internal(result.Errors.First().Metadata[MetaDataErrorValues.Detail].ToString()!));
             }
 
             _logger.LogInformation("Usuario {Email} registrado correctamente con ID {UserId}", command.request.Email, result.Value);

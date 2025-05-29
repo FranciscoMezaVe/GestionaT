@@ -13,10 +13,10 @@ namespace GestionaT.Api.Common.Result
 
             var errors = result.Errors.Select(e => new ApiError
             {
-                Code = e.Metadata.TryGetValue("ErrorCode", out var code) ? code?.ToString() ?? "UNKNOWN_ERROR" : "UNKNOWN_ERROR",
+                Code = e.Metadata.TryGetValue(MetaDataErrorValues.Code, out var code) ? code?.ToString() ?? "UNKNOWN_ERROR" : "UNKNOWN_ERROR",
                 Message = e.Message,
-                Detail = e.Metadata.TryGetValue("Detail", out var detail) ? detail?.ToString() : null,
-                Target = e.Metadata.TryGetValue("Field", out var field) ? field?.ToString() : null
+                Detail = e.Metadata.TryGetValue(MetaDataErrorValues.Detail, out var detail) ? detail?.ToString() : null,
+                Target = e.Metadata.TryGetValue(MetaDataErrorValues.Field, out var field) ? field?.ToString() : null
             }).ToList();
 
             var httpStatus = statusResolver.Resolve(errors.First().Code);
@@ -31,10 +31,10 @@ namespace GestionaT.Api.Common.Result
 
             var errors = result.Errors.Select(e => new ApiError
             {
-                Code = e.Metadata.TryGetValue("ErrorCode", out var code) ? code?.ToString() ?? "UNKNOWN_ERROR" : "UNKNOWN_ERROR",
+                Code = e.Metadata.TryGetValue(MetaDataErrorValues.Code, out var code) ? code?.ToString() ?? "UNKNOWN_ERROR" : "UNKNOWN_ERROR",
                 Message = e.Message,
-                Detail = e.Metadata.TryGetValue("Detail", out var detail) ? detail?.ToString() : null,
-                Target = e.Metadata.TryGetValue("Field", out var field) ? field?.ToString() : null
+                Detail = e.Metadata.TryGetValue(MetaDataErrorValues.Detail, out var detail) ? detail?.ToString() : null,
+                Target = e.Metadata.TryGetValue(MetaDataErrorValues.Field, out var field) ? field?.ToString() : null
             }).ToList();
 
             var httpStatus = statusResolver.Resolve(errors.First().Code);
@@ -48,10 +48,10 @@ namespace GestionaT.Api.Common.Result
 
             var errors = result.Errors.Select(e => new ApiError
             {
-                Code = e.Metadata.TryGetValue("ErrorCode", out var code) ? code?.ToString() ?? "UNKNOWN_ERROR" : "UNKNOWN_ERROR",
+                Code = e.Metadata.TryGetValue(MetaDataErrorValues.Code, out var code) ? code?.ToString() ?? "UNKNOWN_ERROR" : "UNKNOWN_ERROR",
                 Message = e.Message,
-                Detail = e.Metadata.TryGetValue("Detail", out var detail) ? detail?.ToString() : null,
-                Target = e.Metadata.TryGetValue("Field", out var field) ? field?.ToString() : null
+                Detail = e.Metadata.TryGetValue(MetaDataErrorValues.Detail, out var detail) ? detail?.ToString() : null,
+                Target = e.Metadata.TryGetValue(MetaDataErrorValues.Field, out var field) ? field?.ToString() : null
             }).ToList();
 
             var statusCode = statusResolver.Resolve(errors.First().Code);
