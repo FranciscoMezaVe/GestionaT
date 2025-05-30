@@ -88,7 +88,7 @@ namespace GestionaT.Application.Tests.Features.Auth.Commands
         }
 
         [Fact]
-        public async Task Handle_ShouldLogin_WhenUserExists()
+        public async Task Handle_ShouldLogin_WhenUserAndOAuthProvidersExists()
         {
             var userId = Guid.NewGuid();
             var email = "test@example.com";
@@ -100,6 +100,10 @@ namespace GestionaT.Application.Tests.Features.Auth.Commands
             _authServiceMock.Setup(a => a.GetUserRolesAsync(userId)).ReturnsAsync([RolesValues.Worker]);
             _jwtTokenServiceMock.Setup(j => j.GenerateToken(userId, email, It.IsAny<IList<string>>())).Returns("jwt-token");
             _jwtTokenServiceMock.Setup(j => j.GenerateRefreshTokenAsync(userId)).ReturnsAsync("refresh-token");
+
+            _unitOfWorkMock
+                .Setup(x => x.Repository<OAuthProviders>().Query())
+                .Returns(new List<OAuthProviders> { new OAuthProviders { Id = Guid.NewGuid(), UserId = userId } }.AsQueryable());
 
             var command = new OAuthLoginCommand("token", OAuthProvidersValues.Facebook);
 
