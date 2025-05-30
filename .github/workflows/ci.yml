@@ -2,25 +2,36 @@ name: Build & Test Backend
 
 on:
   pull_request:
-    branches: main
+    branches:
+      - main
 
 jobs:
   backend:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Show working directory and files
+      run: |
+        pwd
+        ls -R
+      working-directory: ./src/Core
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.x'
 
-    - name: Restore
-      run: dotnet restore src/Core/GestionaT.sln
+    - name: Restore dependencies
+      run: dotnet restore GestionaT.sln
+      working-directory: ./src/Core
 
-    - name: Build
-      run: dotnet build src/Core/GestionaT.sln --no-restore
+    - name: Build solution
+      run: dotnet build GestionaT.sln --no-restore --configuration Release
+      working-directory: ./src/Core
 
-    - name: Test
-      run: dotnet test src/Core/GestionaT.sln --no-build --verbosity normal
+    - name: Run tests
+      run: dotnet test GestionaT.sln --no-build --verbosity normal --logger "trx"
+      working-directory: ./src/Core
