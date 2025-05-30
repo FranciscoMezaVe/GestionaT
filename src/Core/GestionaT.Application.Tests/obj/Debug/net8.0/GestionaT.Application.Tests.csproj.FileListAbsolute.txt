@@ -127,3 +127,7 @@ D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\obj\Debug\net8.0\GestionaT.Application.Tests.pdb
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\obj\Debug\net8.0\GestionaT.Application.Tests.genruntimeconfig.cache
 D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\obj\Debug\net8.0\ref\GestionaT.Application.Tests.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Http.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\bin\Debug\net8.0\Microsoft.AspNetCore.WebUtilities.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\Documentos\Visual Studio 2022\GestionaT\src\Core\GestionaT.Application.Tests\bin\Debug\net8.0\Microsoft.Net.Http.Headers.dll

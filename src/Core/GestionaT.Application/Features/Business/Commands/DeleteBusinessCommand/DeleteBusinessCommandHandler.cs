@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Shared.Abstractions;
 using MediatR;
@@ -33,14 +34,14 @@ namespace GestionaT.Application.Features.Business.Commands.DeleteBusinessCommand
             if (business is null)
             {
                 _logger.LogWarning("Negocio no encontrado o no pertenece al usuario actual");
-                return Result.Fail("Negocio no encontrado");
+                return Result.Fail(AppErrorFactory.NotFound(nameof(request.BusinessId), request.BusinessId));
             }
 
             // Soft delete
             business.IsDeleted = true;
 
             repository.Update(business);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Negocio {BusinessId} eliminado lógicamente", business.Id);
             return Result.Ok();

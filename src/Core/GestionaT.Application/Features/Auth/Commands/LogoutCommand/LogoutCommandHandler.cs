@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using GestionaT.Application.Common.Errors;
 using GestionaT.Application.Interfaces.Auth;
 using GestionaT.Application.Interfaces.UnitOfWork;
 using GestionaT.Shared.Abstractions;
@@ -26,7 +27,7 @@ namespace GestionaT.Application.Features.Auth.Commands.LogoutCommand
             if (userId == Guid.Empty)
             {
                 _logger.LogWarning("Intento de cierre de sesión fallido: ID de usuario no encontrado.");
-                return Result.Fail("No se pudo encontrar el ID de usuario para cerrar sesión.");
+                return Result.Fail(AppErrorFactory.NotFound(nameof(userId), userId));
             }
 
             var isRemove = await _jwtTokenService.RemoveRefreshTokenAsync(userId!.Value);
@@ -34,7 +35,7 @@ namespace GestionaT.Application.Features.Auth.Commands.LogoutCommand
             if(!isRemove)
             {
                 _logger.LogWarning("Intento de cierre de sesión fallido: No se pudo invalidar el token de actualización.");
-                return Result.Fail("No se pudo invalidar el token de actualización.");
+                return Result.Fail(AppErrorFactory.Internal("No se pudo invalidar el token de actualización."));
             }
 
             return Result.Ok();

@@ -52,6 +52,12 @@ namespace GestionaT.Application.Features.Business.Commands.UploadBusinessImage
                 entityId: command.BusinessId
             );
 
+            if(string.IsNullOrEmpty(imageUrl))
+            {
+                _logger.LogError("Error al guardar la imagen para el negocio {BusinessId}", command.BusinessId);
+                return Result.Fail(AppErrorFactory.Internal("No se pudo guardar la imagen."));
+            }
+
             // Extraer publicId si lo necesitas para eliminar luego
             var publicId = _imageStorageService.ExtractPublicIdFromUrl(imageUrl);
 
