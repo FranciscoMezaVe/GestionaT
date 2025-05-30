@@ -17,10 +17,10 @@ jobs:
         dotnet-version: '8.x'
 
     - name: Restore
-      run: dotnet restore src/Core/YourSolution.sln
+      run: dotnet restore src/Core/GestionaT.sln
 
     - name: Build
-      run: dotnet build src/Core/YourSolution.sln --no-restore
+      run: dotnet build src/Core/GestionaT.sln --no-restore
 
     - name: Test
-      run: dotnet test src/Core/YourSolution.sln --no-build --verbosity normal
+      run: dotnet test src/Core/GestionaT.sln --no-build --verbosity normal
