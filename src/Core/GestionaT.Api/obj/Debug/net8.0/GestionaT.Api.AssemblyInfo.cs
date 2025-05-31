@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GestionaT.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+370ea74cf02149a179f94132f248abbab46ce546")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54e79d9195d96e8d32d8bb1969338405d3b161f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("GestionaT.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GestionaT.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
